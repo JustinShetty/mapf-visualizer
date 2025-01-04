@@ -8,7 +8,7 @@ import React from 'react';
 import { StrictMode, useRef } from 'react';
 
 function App() {
-  const pixiAppRef = useRef<{ skipBackward?: () => void; skipForward?: () => void }>(null);
+  const pixiAppRef = useRef<{ skipBackward?: () => void; skipForward?: () => void; restart?: () => void; }>(null);
 
   const [graph, setGraph] = React.useState<Graph | null>(null);
   const [solution, setSolution] = React.useState<Solution | null>(null);
@@ -23,6 +23,12 @@ function App() {
   const handleSkipForward = () => {
     if (pixiAppRef.current?.skipForward) {
       pixiAppRef.current.skipForward();
+    }
+  }
+
+  const handleRestart = () => {
+    if (pixiAppRef.current?.restart) {
+      pixiAppRef.current.restart();
     }
   }
 
@@ -46,6 +52,7 @@ function App() {
             onPlayAnimationChange={(playAnimation: boolean) => setPlayAnimation(playAnimation)}
             onSkipBackward={handleSkipBackward}
             onSkipForward={handleSkipForward}
+            onRestart={handleRestart}
           />
         </Grid>
       </Grid>

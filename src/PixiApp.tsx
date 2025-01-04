@@ -48,12 +48,20 @@ const PixiApp = forwardRef(({
     const playAnimationRef = useRef(playAnimation);
     const timestepRef = useRef(0.0); 
 
+    function resetTimestep() {
+        timestepRef.current = 0.0;
+    }
+
     useImperativeHandle(ref, () => ({
-        skipFoward: () => {
-            console.log("Skip forward");
-        },
         skipBackward: () => {
             console.log("Skip backward");
+        },
+        skipForward: () => {
+            console.log("Skip forward");
+        },
+        restart: () => {
+            console.log("Restart");
+            resetTimestep();
         },
     }));
 
@@ -66,6 +74,8 @@ const PixiApp = forwardRef(({
             grid.position.y + grid.height / 2
         )
     }
+
+    // const setSpriteLocations
 
     // Animate the solution
     const animateSolution = () => {
@@ -97,15 +107,10 @@ const PixiApp = forwardRef(({
             }
             sprites.push(sprite);
         });
-    
-        // let currentTimestep = 0;
-        // let interpolationProgress = 0;
-        // let currentTimestep = Math.floor(timestepRef.current);
-        // let interpolationProgress = timestepRef.current - currentTimestep;
 
-        let totalFramesPerStep = 120; // Number of frames per timestep
         const speed = 2;
-        totalFramesPerStep /= speed;
+        // ticker is called at ~60 Hz
+        let totalFramesPerStep = 60 / speed; // Number of frames per timestep
     
         const animate = () => {
             if (playAnimationRef.current === false) return;
@@ -124,14 +129,6 @@ const PixiApp = forwardRef(({
     
             const currentState = solution[currentTimestep];
             const nextState = solution[currentTimestep + 1];
-    
-            
-            // interpolationProgress += 1 / totalFramesPerStep; // Increment interpolation progress
-            // if (interpolationProgress >= 1) {
-            //     interpolationProgress = 0;
-            //     currentTimestep++;
-            //     return;
-            // }
     
             // Interpolate between current and next states
             sprites.forEach((sprite, index) => {
