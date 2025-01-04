@@ -46,6 +46,7 @@ function Visualizer({
           graph={graph}
           solution={solution}
           playAnimation={playAnimation}
+          speed={2}
         />
       }
       </div>

@@ -13,6 +13,7 @@ interface PixiAppProps {
     graph: Graph | null;
     solution: Solution | null;
     playAnimation: boolean;
+    speed: number;
 }
 
 // Scale a position from grid units to pixels
@@ -44,7 +45,8 @@ const PixiApp = forwardRef(({
     height, 
     graph, 
     solution, 
-    playAnimation 
+    playAnimation,
+    speed,
 }: PixiAppProps, ref) => {
     const [app, setApp] = useState<PIXI.Application | null>(null);
     const [viewport, setViewport] = useState<Viewport | null>(null);
@@ -52,6 +54,13 @@ const PixiApp = forwardRef(({
     const [grid, setGrid] = useState<PIXI.Container | null>(null);
     const playAnimationRef = useRef(playAnimation);
     const timestepRef = useRef(0.0); 
+    const speedRef = useRef(1.0);
+
+    function stepSize(): number {
+        // ticker is called at ~60 Hz
+        let totalFramesPerStep = 60 / speedRef.current;
+        return 1 / totalFramesPerStep;
+    }
 
     function resetTimestep() {
         timestepRef.current = 0.0;
@@ -59,13 +68,12 @@ const PixiApp = forwardRef(({
 
     useImperativeHandle(ref, () => ({
         skipBackward: () => {
-            console.log("Skip backward");
+            timestepRef.current = Math.max(0, timestepRef.current - stepSize());
         },
         skipForward: () => {
-            console.log("Skip forward");
+            timestepRef.current += stepSize();
         },
         restart: () => {
-            console.log("Restart");
             resetTimestep();
         },
     }));
@@ -139,18 +147,12 @@ const PixiApp = forwardRef(({
             }
             sprites.push(sprite);
         });
-
-        const speed = 2;
-        // ticker is called at ~60 Hz
-        let totalFramesPerStep = 60 / speed; // Number of frames per timestep
     
         const animate = () => {
-            if (playAnimationRef.current === false) return;
-            
-            timestepRef.current += 1 / totalFramesPerStep;
-
-            console.log("timestepRef.current: ", timestepRef.current)
-
+            if (playAnimationRef.current === true) {
+                timestepRef.current += stepSize();
+            }
+            // console.log("timestepRef.current: ", timestepRef.current)
             let currentTimestep = Math.floor(timestepRef.current);
             let interpolationProgress = timestepRef.current - currentTimestep;
 
@@ -230,7 +232,8 @@ const PixiApp = forwardRef(({
     // Update the playAnimationRef when the playAnimation changes
     useEffect(() => {
         playAnimationRef.current = playAnimation;
-    }, [playAnimation]);
+        speedRef.current = speed;
+    }, [playAnimation, speed]);
 
     return <canvas ref={canvasRef} />
 });
