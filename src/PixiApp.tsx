@@ -15,6 +15,11 @@ interface PixiAppProps {
     playAnimation: boolean;
 }
 
+// Scale a position from grid units to pixels
+const scalePosition = (position: number) : number => {
+    return position * GRID_UNIT_TO_PX + GRID_UNIT_TO_PX / 2;
+}
+
 function drawGrid(viewport: Viewport, graph: Graph) : PIXI.Container {
     let grid = viewport.addChild(new PIXI.Container());
 
@@ -75,21 +80,48 @@ const PixiApp = forwardRef(({
         )
     }
 
-    // const setSpriteLocations
+    const moveAndRotateSprites = (sprites: PIXI.Container[], currentTimestep: number, interpolationProgress: number) => {
+        if (solution === null) return
+
+        const currentState = solution[currentTimestep];
+        const nextState = solution[currentTimestep + 1];
+
+        // Interpolate between current and next states
+        sprites.forEach((sprite, index) => {
+            const startPose = currentState[index];
+            const endPose = nextState[index];
+
+            // Interpolate position
+            sprite.x =
+                startPose.position.x +
+                (endPose.position.x - startPose.position.x) * interpolationProgress;
+            sprite.y = 
+                startPose.position.y +
+                (endPose.position.y - startPose.position.y) * interpolationProgress;
+            sprite.x = scalePosition(sprite.x);
+            sprite.y = scalePosition(sprite.y);
+
+            // orientation-aware visualization has two objects for each sprite
+            if (sprite.children.length == 1) return;
+
+            // Interpolate rotation
+            const startRotation = orientationToRotation(startPose.orientation);
+            const endRotation = orientationToRotation(endPose.orientation);
+
+            sprite.rotation =
+                startRotation +
+                (endRotation - startRotation) * interpolationProgress;
+        }); 
+    }
 
     // Animate the solution
     const animateSolution = () => {
         if (app === null || viewport === null || solution === null) return;
         const sprites: PIXI.Container[] = [];
     
-        // Scale a position from grid units to pixels
-        const scalePosition = (position: number) : number => {
-            return position * GRID_UNIT_TO_PX + GRID_UNIT_TO_PX / 2;
-        }
-    
         // Check if the solution is orientation-aware
         const orientation_aware: boolean = solution[0][0].orientation !== Orientation.NONE;
-    
+
         // Create sprites for each entity in the first configuration
         let agents = viewport.addChild(new PIXI.Container());
         solution[0].forEach(() => {
@@ -126,35 +158,7 @@ const PixiApp = forwardRef(({
                 viewport.removeChild(agents);
                 return;
             }
-    
-            const currentState = solution[currentTimestep];
-            const nextState = solution[currentTimestep + 1];
-    
-            // Interpolate between current and next states
-            sprites.forEach((sprite, index) => {
-                const startPose = currentState[index];
-                const endPose = nextState[index];
-    
-                // Interpolate position
-                sprite.x =
-                    startPose.position.x +
-                    (endPose.position.x - startPose.position.x) * interpolationProgress;
-                sprite.y = 
-                    startPose.position.y +
-                    (endPose.position.y - startPose.position.y) * interpolationProgress;
-                sprite.x = scalePosition(sprite.x);
-                sprite.y = scalePosition(sprite.y);
-    
-                if (!orientation_aware) return;
-    
-                // Interpolate rotation
-                const startRotation = orientationToRotation(startPose.orientation);
-                const endRotation = orientationToRotation(endPose.orientation);
-    
-                sprite.rotation =
-                    startRotation +
-                    (endRotation - startRotation) * interpolationProgress;
-            });            
+            moveAndRotateSprites(sprites, currentTimestep, interpolationProgress)
         }
         app.ticker.add(animate)
     }
