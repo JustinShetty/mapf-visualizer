@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 're
 import * as PIXI from 'pixi.js';
 import { Viewport } from 'pixi-viewport';
 import { Graph } from './Graph';
-import { Solution, Orientation } from './Solution';
+import { Solution, Orientation, orientationToRotation } from './Solution';
 import { Coordinate } from './Graph';
 
 const GRID_UNIT_TO_PX: number = 100;
@@ -46,7 +46,7 @@ const PixiApp = forwardRef(({
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [grid, setGrid] = useState<PIXI.Container | null>(null);
     const playAnimationRef = useRef(playAnimation);
-    const progressRef = useRef(0); 
+    const timestepRef = useRef(0.0); 
 
     useImperativeHandle(ref, () => ({
         skipFoward: () => {
@@ -71,15 +71,6 @@ const PixiApp = forwardRef(({
     const animateSolution = () => {
         if (app === null || viewport === null || solution === null) return;
         const sprites: PIXI.Container[] = [];
-    
-        // Create a mapping from Orientation to rotation angles
-        const orientationToRotation = {
-            [Orientation.NONE]: 0,
-            [Orientation.X_MINUS]: Math.PI, // 180 degrees
-            [Orientation.X_PLUS]: 0,       // 0 degrees
-            [Orientation.Y_MINUS]: -Math.PI / 2, // 90 degrees
-            [Orientation.Y_PLUS]: Math.PI / 2, // -90 degrees
-        };
     
         // Scale a position from grid units to pixels
         const scalePosition = (position: number) : number => {
@@ -107,15 +98,25 @@ const PixiApp = forwardRef(({
             sprites.push(sprite);
         });
     
-        let currentTimestep = 0;
-        let interpolationProgress = 0;
+        // let currentTimestep = 0;
+        // let interpolationProgress = 0;
+        // let currentTimestep = Math.floor(timestepRef.current);
+        // let interpolationProgress = timestepRef.current - currentTimestep;
+
         let totalFramesPerStep = 120; // Number of frames per timestep
         const speed = 2;
         totalFramesPerStep /= speed;
     
-        const animate = (ticker: PIXI.Ticker) => {
+        const animate = () => {
             if (playAnimationRef.current === false) return;
-            console.log(ticker);
+            
+            timestepRef.current += 1 / totalFramesPerStep;
+
+            console.log("timestepRef.current: ", timestepRef.current)
+
+            let currentTimestep = Math.floor(timestepRef.current);
+            let interpolationProgress = timestepRef.current - currentTimestep;
+
             if (currentTimestep >= solution.length - 1) {
                 viewport.removeChild(agents);
                 return;
@@ -124,13 +125,13 @@ const PixiApp = forwardRef(({
             const currentState = solution[currentTimestep];
             const nextState = solution[currentTimestep + 1];
     
-            interpolationProgress += 1 / totalFramesPerStep; // Increment interpolation progress
-    
-            if (interpolationProgress >= 1) {
-                interpolationProgress = 0;
-                currentTimestep++;
-                return;
-            }
+            
+            // interpolationProgress += 1 / totalFramesPerStep; // Increment interpolation progress
+            // if (interpolationProgress >= 1) {
+            //     interpolationProgress = 0;
+            //     currentTimestep++;
+            //     return;
+            // }
     
             // Interpolate between current and next states
             sprites.forEach((sprite, index) => {
@@ -150,13 +151,13 @@ const PixiApp = forwardRef(({
                 if (!orientation_aware) return;
     
                 // Interpolate rotation
-                const startRotation = orientationToRotation[startPose.orientation];
-                const endRotation = orientationToRotation[endPose.orientation];
+                const startRotation = orientationToRotation(startPose.orientation);
+                const endRotation = orientationToRotation(endPose.orientation);
     
                 sprite.rotation =
                     startRotation +
                     (endRotation - startRotation) * interpolationProgress;
-            });
+            });            
         }
         app.ticker.add(animate)
     }

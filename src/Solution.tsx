@@ -8,6 +8,16 @@ export enum Orientation {
     Y_PLUS
 }
 
+export function orientationToRotation(o: Orientation): number {
+    switch (o) {
+        case Orientation.NONE: return 0;
+        case Orientation.X_MINUS: return Math.PI;
+        case Orientation.X_PLUS: return 0;
+        case Orientation.Y_MINUS: return -Math.PI / 2;
+        case Orientation.Y_PLUS: return Math.PI / 2;
+    }
+};
+
 function orientationFromString(s: string): Orientation {
     switch (s) {
         case "X_MINUS": return Orientation.X_MINUS;
