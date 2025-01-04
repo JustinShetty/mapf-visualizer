@@ -7,9 +7,16 @@ import { useState, useRef, useEffect } from 'react';
 interface VisualizerProps {
   graph: Graph | null;
   solution: Solution | null;
+  playAnimation: boolean;
+  pixiAppRef: React.MutableRefObject<{ skipBackward?: () => void; skipForward?: () => void } | null>;
 }
 
-function Visualizer({ graph, solution }: VisualizerProps) {
+function Visualizer({
+  graph, 
+  solution, 
+  playAnimation, 
+  pixiAppRef
+}: VisualizerProps) {
   const [viewportSize, setViewportSize] = useState<{ width: number; height: number } | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -33,10 +40,12 @@ function Visualizer({ graph, solution }: VisualizerProps) {
       <div ref={canvasRef}>
       {viewportSize !== null && 
         <PixiApp 
+          ref={pixiAppRef}
           width={viewportSize.width} 
           height={viewportSize.height}
           graph={graph}
           solution={solution}
+          playAnimation={playAnimation}
         />
       }
       </div>
