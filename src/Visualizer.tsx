@@ -9,13 +9,17 @@ interface VisualizerProps {
   solution: Solution | null;
   playAnimation: boolean;
   pixiAppRef: React.MutableRefObject<{ skipBackward?: () => void; skipForward?: () => void } | null>;
+  speed: number;
+  loopAnimation: boolean;
 }
 
 function Visualizer({
   graph, 
   solution, 
   playAnimation, 
-  pixiAppRef
+  pixiAppRef,
+  speed,
+  loopAnimation,
 }: VisualizerProps) {
   const [viewportSize, setViewportSize] = useState<{ width: number; height: number } | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -46,7 +50,8 @@ function Visualizer({
           graph={graph}
           solution={solution}
           playAnimation={playAnimation}
-          speed={2}
+          speed={speed}
+          loopAnimation={loopAnimation}
         />
       }
       </div>

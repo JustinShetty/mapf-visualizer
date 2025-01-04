@@ -13,6 +13,8 @@ function App() {
   const [graph, setGraph] = React.useState<Graph | null>(null);
   const [solution, setSolution] = React.useState<Solution | null>(null);
   const [playAnimation, setPlayAnimation] = React.useState<boolean>(true);
+  const [speed, setSpeed] = React.useState<number>(1.0);
+  const [loopAnimation, setLoopAnimation] = React.useState<boolean>(true);
 
   const handleSkipBackward = () => {
     if (pixiAppRef.current?.skipBackward) {
@@ -42,6 +44,8 @@ function App() {
             graph={graph} 
             solution={solution} 
             playAnimation={playAnimation}
+            speed={speed}
+            loopAnimation={loopAnimation}
           />
         </Grid>
         <Grid size={4}>
@@ -53,6 +57,9 @@ function App() {
             onSkipBackward={handleSkipBackward}
             onSkipForward={handleSkipForward}
             onRestart={handleRestart}
+            onSpeedChange={(speed: number) => setSpeed(speed)}
+            loopAnimation={loopAnimation}
+            onLoopAnimationChange={(loopAnimation: boolean) => setLoopAnimation(loopAnimation)}
           />
         </Grid>
       </Grid>

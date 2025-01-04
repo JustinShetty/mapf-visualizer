@@ -14,6 +14,7 @@ interface PixiAppProps {
     solution: Solution | null;
     playAnimation: boolean;
     speed: number;
+    loopAnimation: boolean;
 }
 
 // Scale a position from grid units to pixels
@@ -47,6 +48,7 @@ const PixiApp = forwardRef(({
     solution, 
     playAnimation,
     speed,
+    loopAnimation,
 }: PixiAppProps, ref) => {
     const [app, setApp] = useState<PIXI.Application | null>(null);
     const [viewport, setViewport] = useState<Viewport | null>(null);
@@ -55,6 +57,7 @@ const PixiApp = forwardRef(({
     const playAnimationRef = useRef(playAnimation);
     const timestepRef = useRef(0.0); 
     const speedRef = useRef(1.0);
+    const loopAnimationRef = useRef(true);
 
     function stepSize(): number {
         // ticker is called at ~60 Hz
@@ -125,6 +128,7 @@ const PixiApp = forwardRef(({
     // Animate the solution
     const animateSolution = () => {
         if (app === null || viewport === null || solution === null) return;
+        resetTimestep();
         const sprites: PIXI.Container[] = [];
     
         // Check if the solution is orientation-aware
@@ -157,7 +161,11 @@ const PixiApp = forwardRef(({
             let interpolationProgress = timestepRef.current - currentTimestep;
 
             if (currentTimestep >= solution.length - 1) {
-                viewport.removeChild(agents);
+                if (loopAnimationRef.current) {
+                    resetTimestep();
+                } else {
+                    viewport.removeChild(agents);
+                }
                 return;
             }
             moveAndRotateSprites(sprites, currentTimestep, interpolationProgress)
@@ -233,7 +241,8 @@ const PixiApp = forwardRef(({
     useEffect(() => {
         playAnimationRef.current = playAnimation;
         speedRef.current = speed;
-    }, [playAnimation, speed]);
+        loopAnimationRef.current = loopAnimation
+    }, [playAnimation, speed, loopAnimation]);
 
     return <canvas ref={canvasRef} />
 });

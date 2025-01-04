@@ -14,6 +14,9 @@ interface ConfigBarProps {
   onSkipBackward: () => void;
   onSkipForward: () => void;
   onRestart: () => void;
+  onSpeedChange: (speed: number) => void;
+  loopAnimation: boolean,
+  onLoopAnimationChange: (loopAnimation: boolean) => void;
 }
 
 function ConfigBar({ 
@@ -24,6 +27,9 @@ function ConfigBar({
   onSkipBackward,
   onSkipForward,
   onRestart,
+  onSpeedChange,
+  loopAnimation,
+  onLoopAnimationChange,
 }: ConfigBarProps) {
   const repoName = "JustinShetty/mapf-visualizer";
   return (
@@ -38,6 +44,9 @@ function ConfigBar({
         onSkipBackward={onSkipBackward}
         onSkipForward={onSkipForward}
         onRestart={onRestart}
+        onSpeedChange={onSpeedChange}
+        loopAnimation={loopAnimation}
+        onLoopAnimationChange={onLoopAnimationChange}
       />
       <Divider />
       <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white' }}>
