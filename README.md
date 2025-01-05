@@ -6,7 +6,8 @@ This repository hosts the web-based version of the MAPF (Multi-Agent Pathfinding
 This is a work-in-progress and has not yet reached feature parity with [Kei18/mapf-visualizer](https://github.com/Kei18/mapf-visualizer).
 - [x] Map plotting
 - [x] Basic solution animation (with and without rotation)
-- [ ] Playback control (play, pause, reset, speed adjustment, etc.)
+- [x] Playback control (play, pause, reset, speed adjustment, etc.)
+- [ ] Agent ID display, timestep display
 
 ## Features
 
