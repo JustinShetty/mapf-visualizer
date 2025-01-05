@@ -81,11 +81,11 @@ function AnimationControl({
                 justifyContent="center"
             >
                 <Slider
-                    defaultValue={1.0}
-                    step={0.1}
+                    defaultValue={2.0}
+                    step={0.2}
                     marks
-                    min={0.1}
-                    max={5}
+                    min={0.2}
+                    max={10}
                     valueLabelDisplay="auto"
                     onChange={handleSliderChange}
                 />
