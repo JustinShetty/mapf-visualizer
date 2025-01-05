@@ -8,7 +8,7 @@ interface VisualizerProps {
   graph: Graph | null;
   solution: Solution | null;
   playAnimation: boolean;
-  pixiAppRef: React.MutableRefObject<{ skipBackward?: () => void; skipForward?: () => void } | null>;
+  pixiAppRef: React.MutableRefObject<{ skipBackward?: () => void; skipForward?: () => void; restart?: () => void; } | null>;
   speed: number;
   loopAnimation: boolean;
 }
