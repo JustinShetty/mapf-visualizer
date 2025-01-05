@@ -219,11 +219,6 @@ const PixiApp = forwardRef(({
         }
     }, [width, height]);
 
-    // Fit the viewport to the grid when the grid changes
-    useEffect(() => {
-        fit();
-    }, [grid]);
-
     // Draw the grid when the graph changes
     useEffect(() => {
         if (app && viewport && graph) {
@@ -232,8 +227,9 @@ const PixiApp = forwardRef(({
         }
     }, [graph]);
 
-    // Animate the solution when the solution changes
+    // Fit the viewport and try to animate the solution when the grid or solution changes
     useEffect(() => {
+        fit();
         animateSolution();
     }, [grid, solution]);
 
