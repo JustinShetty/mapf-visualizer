@@ -17,11 +17,6 @@ interface PixiAppProps {
     loopAnimation: boolean;
 }
 
-// Scale a position from grid units to pixels
-const scalePosition = (position: number) : number => {
-    return position * GRID_UNIT_TO_PX + GRID_UNIT_TO_PX / 2;
-}
-
 function drawGrid(viewport: Viewport, graph: Graph) : PIXI.Container {
     let grid = viewport.addChild(new PIXI.Container());
 
@@ -58,6 +53,13 @@ const PixiApp = forwardRef(({
     const timestepRef = useRef(0.0); 
     const speedRef = useRef(1.0);
     const loopAnimationRef = useRef(true);
+    const hudRef = useRef<PIXI.Container | null>(null);
+    const timestepTextRef = useRef<PIXI.Text | null>(null);
+
+    // Scale a position from grid units to pixels
+    const scalePosition = (position: number) : number => {
+        return position * GRID_UNIT_TO_PX + GRID_UNIT_TO_PX / 2;
+    }
 
     function stepSize(): number {
         // ticker is called at ~60 Hz
@@ -71,10 +73,11 @@ const PixiApp = forwardRef(({
 
     useImperativeHandle(ref, () => ({
         skipBackward: () => {
-            timestepRef.current = Math.max(0, timestepRef.current - stepSize());
+            timestepRef.current = Math.max(0, speedRef.current);
         },
         skipForward: () => {
-            timestepRef.current += stepSize();
+            console.log(speedRef.current)
+            timestepRef.current += speedRef.current;
         },
         restart: () => {
             resetTimestep();
@@ -171,6 +174,9 @@ const PixiApp = forwardRef(({
                 }
                 return;
             }
+            if (timestepTextRef.current) {
+                timestepTextRef.current.text = `Timestep: ${timestepRef.current.toFixed(1)}`;
+            }
             moveAndRotateSprites(sprites, currentTimestep, interpolationProgress)
         }
         app.ticker.add(animate)
@@ -206,6 +212,16 @@ const PixiApp = forwardRef(({
             } else {
                 if (app.stage.children.length === 0) {
                     app.stage.addChild(viewport);
+                    hudRef.current = app.stage.addChild(new PIXI.Container());
+                    const textStyle = new PIXI.TextStyle({
+                        fontSize: 24,
+                        fill: 0x000000,
+                        stroke: {color: 0xffffff, width: 4},
+                    });
+                    timestepTextRef.current = hudRef.current.addChild(
+                        new PIXI.Text({style: textStyle})
+                    );
+                    timestepTextRef.current.position.set(10, 10);
                 }
                 app.start();
             }

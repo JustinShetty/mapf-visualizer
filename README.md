@@ -7,7 +7,11 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 - [x] Map plotting
 - [x] Basic solution animation (with and without rotation)
 - [x] Playback control (play, pause, reset, speed adjustment, etc.)
-- [ ] Agent ID display, timestep display
+- [x] Timestep display
+- [ ] Playback control tooltips
+- [ ] Agent ID display
+- [ ] Agent coloring
+- [ ] Per-agent path drawing
 
 ## Features
 
