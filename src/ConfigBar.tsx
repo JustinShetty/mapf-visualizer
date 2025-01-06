@@ -17,6 +17,7 @@ interface ConfigBarProps {
   onSpeedChange: (speed: number) => void;
   loopAnimation: boolean,
   onLoopAnimationChange: (loopAnimation: boolean) => void;
+  onFitView: () => void;
 }
 
 function ConfigBar({ 
@@ -30,6 +31,7 @@ function ConfigBar({
   onSpeedChange,
   loopAnimation,
   onLoopAnimationChange,
+  onFitView,
 }: ConfigBarProps) {
   const repoName = "JustinShetty/mapf-visualizer";
   return (
@@ -47,6 +49,7 @@ function ConfigBar({
         onSpeedChange={onSpeedChange}
         loopAnimation={loopAnimation}
         onLoopAnimationChange={onLoopAnimationChange}
+        onFitView={onFitView}
       />
       <Divider />
       <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white' }}>

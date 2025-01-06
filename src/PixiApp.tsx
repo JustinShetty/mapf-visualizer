@@ -79,6 +79,9 @@ const PixiApp = forwardRef(({
         restart: () => {
             resetTimestep();
         },
+        fit: () => {
+            fit();
+        },
     }));
 
     // Fit the viewport to the grid

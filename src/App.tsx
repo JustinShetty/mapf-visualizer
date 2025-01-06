@@ -8,7 +8,12 @@ import React from 'react';
 import { StrictMode, useRef } from 'react';
 
 function App() {
-  const pixiAppRef = useRef<{ skipBackward?: () => void; skipForward?: () => void; restart?: () => void; }>(null);
+  const pixiAppRef = useRef<{ 
+    skipBackward?: () => void; 
+    skipForward?: () => void; 
+    restart?: () => void; 
+    fit?: () => void;
+  }>(null);
 
   const [graph, setGraph] = React.useState<Graph | null>(null);
   const [solution, setSolution] = React.useState<Solution | null>(null);
@@ -31,6 +36,12 @@ function App() {
   const handleRestart = () => {
     if (pixiAppRef.current?.restart) {
       pixiAppRef.current.restart();
+    }
+  }
+
+  const handleFitView = () => {
+    if (pixiAppRef.current?.fit) {
+      pixiAppRef.current.fit();
     }
   }
 
@@ -60,6 +71,7 @@ function App() {
             onSpeedChange={(speed: number) => setSpeed(speed)}
             loopAnimation={loopAnimation}
             onLoopAnimationChange={(loopAnimation: boolean) => setLoopAnimation(loopAnimation)}
+            onFitView={handleFitView}
           />
         </Grid>
       </Grid>

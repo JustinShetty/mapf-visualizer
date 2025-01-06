@@ -22,6 +22,7 @@ interface AnimationControlProps {
     onSpeedChange: (speed: number) => void;
     loopAnimation: boolean,
     onLoopAnimationChange: (loopAnimation: boolean) => void;
+    onFitView: () => void;
 }
 
 function AnimationControl({
@@ -33,6 +34,7 @@ function AnimationControl({
     onSpeedChange,
     loopAnimation,
     onLoopAnimationChange,
+    onFitView,
 }: AnimationControlProps) {  
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
@@ -79,7 +81,7 @@ function AnimationControl({
                         </Button>
                     </Tooltip>
                     <Tooltip title="Reset view">
-                        <Button>
+                        <Button onClick={onFitView}>
                             <CropFreeIcon />
                         </Button>
                     </Tooltip>
