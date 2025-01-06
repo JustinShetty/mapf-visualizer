@@ -9,6 +9,9 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import Slider from '@mui/material/Slider';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import RepeatOnIcon from '@mui/icons-material/RepeatOn';
+import Stack from '@mui/material/Stack';
+import CropFreeIcon from '@mui/icons-material/CropFree';
+import Tooltip from '@mui/material/Tooltip';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -39,58 +42,64 @@ function AnimationControl({
     };
 
     return (
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Stack direction="column" spacing={2}>
             <Box display="flex" justifyContent="center">
-                <ButtonGroup
-                    size="large"
-                    variant="outlined" 
-                >
-                    <Button onClick={onSkipBackward}>
-                        <SkipPreviousIcon />
-                    </Button>            
-                    <Button
-                        onClick={() => onPlayAnimationChange(!playAnimation)}
-                    >
-                        {playAnimation ? 
-                        <PauseTwoToneIcon /> : 
-                        <PlayArrowIcon />}
-                    </Button>
-                    <Button onClick={onSkipForward}>
-                        <SkipNextIcon />
-                    </Button>
+                <ButtonGroup size="large" variant="outlined">
+                    <Tooltip title="Backward one step">
+                        <Button onClick={onSkipBackward}>
+                            <SkipPreviousIcon />
+                        </Button>   
+                    </Tooltip>    
+                    <Tooltip title={playAnimation ? "Pause" : "Play"}>     
+                        <Button onClick={() => onPlayAnimationChange(!playAnimation)}>
+                            {playAnimation ? 
+                            <PauseTwoToneIcon /> : 
+                            <PlayArrowIcon />}
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title="Forward one step">
+                        <Button onClick={onSkipForward}>
+                            <SkipNextIcon />
+                        </Button>
+                    </Tooltip>
                 </ButtonGroup>
             </Box>
             <Box display="flex" justifyContent="center">
-                <ButtonGroup
-                size="large"
-                variant="outlined"
-                >
-                    <Button onClick={onRestart}>
-                        <RestartAltIcon />
-                    </Button>
-                    <Button onClick={() => onLoopAnimationChange(!loopAnimation)}>
-                        {loopAnimation ? 
-                        <RepeatOnIcon /> : 
-                        <RepeatIcon />}
-                    </Button>
-                 </ButtonGroup>
+                <ButtonGroup size="large" variant="outlined">
+                    <Tooltip title="Restart animation">
+                        <Button onClick={onRestart}>
+                            <RestartAltIcon />
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title={loopAnimation ? "Disable loop" : "Enable loop"}>
+                        <Button onClick={() => onLoopAnimationChange(!loopAnimation)}>
+                            {loopAnimation ? 
+                            <RepeatOnIcon /> : 
+                            <RepeatIcon />}
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title="Reset view">
+                        <Button>
+                            <CropFreeIcon />
+                        </Button>
+                    </Tooltip>
+                </ButtonGroup>
             </Box>
-            <Box 
-                sx={{ width: 1/2 }}
-                display="flex" 
-                justifyContent="center"
-            >
-                <Slider
-                    defaultValue={2.0}
-                    step={0.2}
-                    marks
-                    min={0.2}
-                    max={10}
-                    valueLabelDisplay="auto"
-                    onChange={handleSliderChange}
-                />
+            <Box display='flex' justifyContent='center'>
+                <Tooltip title="Adjust animation step size (speed)">
+                    <Slider
+                        defaultValue={2.0}
+                        step={0.2}
+                        marks
+                        min={0.2}
+                        max={10}
+                        valueLabelDisplay="auto"
+                        onChange={handleSliderChange}
+                        sx={{ width: '50%' }}
+                    />
+                </Tooltip>
             </Box>
-        </Box>
+        </Stack>
     );
 }
 
