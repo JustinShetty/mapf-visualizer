@@ -59,6 +59,7 @@ export function parseSolution(text: string): Solution {
             let pose = new Pose(new Coordinate(x, y), o);
             config.push(pose);
         }
+        if (config.length === 0) throw new Error("Invalid solution");
         solution.push(config);
     }
     return solution;
