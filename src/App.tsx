@@ -57,6 +57,7 @@ function App() {
             onSkipBackward={handleSkipBackward}
             onSkipForward={handleSkipForward}
             onRestart={handleRestart}
+            speed={speed}
             onSpeedChange={(speed: number) => setSpeed(speed)}
             loopAnimation={loopAnimation}
             onLoopAnimationChange={(loopAnimation: boolean) => setLoopAnimation(loopAnimation)}

@@ -16,6 +16,7 @@ interface AnimationControlProps {
     onSkipBackward: () => void;
     onSkipForward: () => void;
     onRestart: () => void;
+    speed: number;
     onSpeedChange: (speed: number) => void;
     loopAnimation: boolean,
     onLoopAnimationChange: (loopAnimation: boolean) => void;
@@ -27,6 +28,7 @@ function AnimationControl({
     onSkipBackward, 
     onSkipForward,
     onRestart,
+    speed,
     onSpeedChange,
     loopAnimation,
     onLoopAnimationChange,
@@ -81,7 +83,7 @@ function AnimationControl({
                 justifyContent="center"
             >
                 <Slider
-                    defaultValue={2.0}
+                    value={speed}
                     step={0.2}
                     marks
                     min={0.2}
