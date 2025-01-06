@@ -17,11 +17,6 @@ interface PixiAppProps {
     loopAnimation: boolean;
 }
 
-// Scale a position from grid units to pixels
-const scalePosition = (position: number) : number => {
-    return position * GRID_UNIT_TO_PX + GRID_UNIT_TO_PX / 2;
-}
-
 function drawGrid(viewport: Viewport, graph: Graph) : PIXI.Container {
     let grid = viewport.addChild(new PIXI.Container());
 
@@ -58,6 +53,11 @@ const PixiApp = forwardRef(({
     const timestepRef = useRef(0.0); 
     const speedRef = useRef(1.0);
     const loopAnimationRef = useRef(true);
+
+    // Scale a position from grid units to pixels
+    const scalePosition = (position: number) : number => {
+        return position * GRID_UNIT_TO_PX + GRID_UNIT_TO_PX / 2;
+    }
 
     function stepSize(): number {
         // ticker is called at ~60 Hz
