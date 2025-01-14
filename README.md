@@ -10,7 +10,7 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 - [x] Timestep display
 - [x] Playback control tooltips
 - [ ] Agent ID display
-- [ ] Agent coloring
+- [x] Agent coloring
 - [ ] Per-agent path drawing
 
 ## Features

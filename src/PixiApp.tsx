@@ -4,6 +4,7 @@ import { Viewport } from 'pixi-viewport';
 import { Graph } from './Graph';
 import { Solution, Orientation, orientationToRotation } from './Solution';
 import { Coordinate } from './Graph';
+import { AGENT_COLORS } from './Params';
 
 const GRID_UNIT_TO_PX: number = 100;
 
@@ -142,12 +143,14 @@ const PixiApp = forwardRef(({
 
         // Create sprites for each entity in the first configuration
         let agents = viewport.addChild(new PIXI.Container());
+        let agent_id = 0;
         solution[0].forEach(() => {
             const sprite = agents.addChild(new PIXI.Container());
             let circle = sprite.addChild(new PIXI.Graphics());
+            let agent_color = AGENT_COLORS[agent_id++ % AGENT_COLORS.length];
             circle
                 .circle(0, 0, GRID_UNIT_TO_PX/3)
-                .fill(0x0000ff);
+                .fill(agent_color);
             if (orientation_aware) {
                 const radius = circle.width / 2;
                 let triangle = sprite.addChild(new PIXI.Graphics());
