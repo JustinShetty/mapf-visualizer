@@ -12,6 +12,7 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 - [ ] Agent ID display
 - [x] Agent coloring
 - [ ] Per-agent path drawing
+- [ ] Keybindings for animation control
 
 ## Features
 
@@ -24,12 +25,10 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 1. **Upload a Map File**: Load your MAPF map file (.txt format).
 2. **Upload a Solution File**: Load the corresponding solution file (.txt format).
 3. **Visualize**: The solution will automatically play
-   
-Coming soon:
->5. **Controls**:
->   - **Play/Pause**: Start or pause the visualization.
->   - **Step Forward/Backward**: Navigate the simulation frame-by-frame.
->   - **Speed Adjustment**: Change the playback speed.
+4. **Controls**:
+   - **Play/Pause**: Start or pause the visualization.
+   - **Step Forward/Backward**: Navigate the simulation frame-by-frame.
+   - **Speed Adjustment**: Change the playback speed.
 
 ## File Format
 
