@@ -11,6 +11,7 @@ interface VisualizerProps {
   pixiAppRef: React.MutableRefObject<{ skipBackward?: () => void; skipForward?: () => void; restart?: () => void; } | null>;
   speed: number;
   loopAnimation: boolean;
+  showAgentId: boolean;
 }
 
 function Visualizer({
@@ -20,6 +21,7 @@ function Visualizer({
   pixiAppRef,
   speed,
   loopAnimation,
+  showAgentId,
 }: VisualizerProps) {
   const [viewportSize, setViewportSize] = useState<{ width: number; height: number } | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -52,6 +54,7 @@ function Visualizer({
           playAnimation={playAnimation}
           speed={speed}
           loopAnimation={loopAnimation}
+          showAgentId={showAgentId}
         />
       }
       </div>

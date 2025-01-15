@@ -19,6 +19,8 @@ interface ConfigBarProps {
   loopAnimation: boolean,
   onLoopAnimationChange: (loopAnimation: boolean) => void;
   onFitView: () => void;
+  showAgentId: boolean;
+  onShowAgentIdChange: (showAgentId: boolean) => void;
 }
 
 function ConfigBar({ 
@@ -34,6 +36,8 @@ function ConfigBar({
   loopAnimation,
   onLoopAnimationChange,
   onFitView,
+  showAgentId,
+  onShowAgentIdChange,
 }: ConfigBarProps) {
   const repoName = "JustinShetty/mapf-visualizer";
   return (
@@ -53,6 +57,8 @@ function ConfigBar({
         loopAnimation={loopAnimation}
         onLoopAnimationChange={onLoopAnimationChange}
         onFitView={onFitView}
+        showAgentId={showAgentId}
+        onShowAgentIdChange={onShowAgentIdChange}
       />
       <Divider />
       <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white' }}>

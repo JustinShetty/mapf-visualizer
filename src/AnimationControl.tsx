@@ -12,6 +12,8 @@ import RepeatOnIcon from '@mui/icons-material/RepeatOn';
 import Stack from '@mui/material/Stack';
 import CropFreeIcon from '@mui/icons-material/CropFree';
 import Tooltip from '@mui/material/Tooltip';
+import LooksOneIcon from '@mui/icons-material/LooksOne';
+import LooksOneOutlinedIcon from '@mui/icons-material/LooksOneOutlined';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -24,6 +26,8 @@ interface AnimationControlProps {
     loopAnimation: boolean,
     onLoopAnimationChange: (loopAnimation: boolean) => void;
     onFitView: () => void;
+    showAgentId: boolean;
+    onShowAgentIdChange: (showAgentId: boolean) => void;
 }
 
 function AnimationControl({
@@ -37,6 +41,8 @@ function AnimationControl({
     loopAnimation,
     onLoopAnimationChange,
     onFitView,
+    showAgentId,
+    onShowAgentIdChange,
 }: AnimationControlProps) {  
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
@@ -85,6 +91,13 @@ function AnimationControl({
                     <Tooltip title="Reset view">
                         <Button onClick={onFitView}>
                             <CropFreeIcon />
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title={showAgentId ? "Hide agent ID" : "Show agent ID"}>
+                        <Button onClick={() => onShowAgentIdChange(!showAgentId)}>
+                            {showAgentId ?
+                            <LooksOneIcon />:
+                            <LooksOneOutlinedIcon />}
                         </Button>
                     </Tooltip>
                 </ButtonGroup>

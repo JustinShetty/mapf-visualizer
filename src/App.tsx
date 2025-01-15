@@ -20,6 +20,7 @@ function App() {
   const [playAnimation, setPlayAnimation] = React.useState<boolean>(true);
   const [speed, setSpeed] = React.useState<number>(1.0);
   const [loopAnimation, setLoopAnimation] = React.useState<boolean>(true);
+  const [showAgentId, setShowAgentId] = React.useState<boolean>(false);
 
   const handleSkipBackward = () => {
     if (pixiAppRef.current?.skipBackward) {
@@ -57,6 +58,7 @@ function App() {
             playAnimation={playAnimation}
             speed={speed}
             loopAnimation={loopAnimation}
+            showAgentId={showAgentId}
           />
         </Grid>
         <Grid size={4}>
@@ -73,6 +75,8 @@ function App() {
             loopAnimation={loopAnimation}
             onLoopAnimationChange={(loopAnimation: boolean) => setLoopAnimation(loopAnimation)}
             onFitView={handleFitView}
+            showAgentId={showAgentId}
+            onShowAgentIdChange={(showAgentId: boolean) => setShowAgentId(showAgentId)}
           />
         </Grid>
       </Grid>

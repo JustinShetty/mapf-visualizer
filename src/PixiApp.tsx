@@ -16,6 +16,7 @@ interface PixiAppProps {
     playAnimation: boolean;
     speed: number;
     loopAnimation: boolean;
+    showAgentId: boolean;
 }
 
 function drawGrid(viewport: Viewport, graph: Graph) : PIXI.Container {
@@ -45,6 +46,7 @@ const PixiApp = forwardRef(({
     playAnimation,
     speed,
     loopAnimation,
+    showAgentId,
 }: PixiAppProps, ref) => {
     const [app, setApp] = useState<PIXI.Application | null>(null);
     const [viewport, setViewport] = useState<Viewport | null>(null);
@@ -56,6 +58,7 @@ const PixiApp = forwardRef(({
     const loopAnimationRef = useRef(true);
     const hudRef = useRef<PIXI.Container | null>(null);
     const timestepTextRef = useRef<PIXI.Text | null>(null);
+    const showAgentIdRef = useRef(false);
 
     // Scale a position from grid units to pixels
     const scalePosition = (position: number) : number => {
@@ -106,6 +109,12 @@ const PixiApp = forwardRef(({
 
         // Interpolate between current and next states
         sprites.forEach((sprite, index) => {
+            // Show or hide agent ID
+            let idText = sprite.children[1];
+            if (idText !== undefined) {
+                idText.visible = showAgentIdRef.current;
+            }
+
             const startPose = currentState[index];
             const endPose = nextState[index];
 
@@ -279,6 +288,11 @@ const PixiApp = forwardRef(({
         speedRef.current = speed;
         loopAnimationRef.current = loopAnimation
     }, [playAnimation, speed, loopAnimation]);
+
+    // Update the showAgentIdRef when the showAgentId changes
+    useEffect(() => {
+        showAgentIdRef.current = showAgentId;
+    }, [showAgentId]);
 
     return <canvas ref={canvasRef} />
 });
