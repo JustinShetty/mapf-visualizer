@@ -4,7 +4,7 @@ import { Viewport } from 'pixi-viewport';
 import { Graph } from './Graph';
 import { Solution, Orientation, orientationToRotation } from './Solution';
 import { Coordinate } from './Graph';
-import { AGENT_COLORS } from './Params';
+import { BACKGROUND_COLOR, GRID_COLOR, TEXT_COLOR, AGENT_COLORS } from './Params';
 
 const GRID_UNIT_TO_PX: number = 100;
 
@@ -25,9 +25,9 @@ function drawGrid(viewport: Viewport, graph: Graph) : PIXI.Container {
         for (let y: number = 0; y < graph.height; y++) {
             let cell = grid.addChild(new PIXI.Graphics());
             cell.rect(x*GRID_UNIT_TO_PX, y*GRID_UNIT_TO_PX, GRID_UNIT_TO_PX, GRID_UNIT_TO_PX)
-            .stroke({color: 0x000000, width: 10});
+            .stroke({color: GRID_COLOR, width: 10});
             if (graph.obstacles.has(new Coordinate(x, y).toString())) {
-                cell.fill({color: 0x000000});
+                cell.fill({color: GRID_COLOR});
             }
         }
     }
@@ -158,16 +158,19 @@ const PixiApp = forwardRef(({
                 let triangle = circleContainer.addChild(new PIXI.Graphics());
                 triangle
                     .poly([0, radius, 0, -radius, radius, 0])
-                    .fill(0xffffff);
+                    .fill(BACKGROUND_COLOR);
             }
             let idText = sprite.addChild(new PIXI.Text({
                 text: `${agentId}`,
                 style: {
                     fontfamily: 'Arial',
                     fontSize: circle.width / 2,
-                    fill: 0x000000,
+                    fill: TEXT_COLOR,
                 }
             }));
+            let fontSuperResolutionScale = 2;
+            idText.style.fontSize *= fontSuperResolutionScale;
+            idText.scale.set(1 / fontSuperResolutionScale, 1 / fontSuperResolutionScale);
             idText.x = -idText.width / 2;
             idText.y = -idText.height / 2;
             sprites.push(sprite);
@@ -207,7 +210,7 @@ const PixiApp = forwardRef(({
                     width: width, 
                     height: height, 
                     canvas: canvas, 
-                    background: 0xffffff,
+                    background: BACKGROUND_COLOR,
                 }).then(() => {
                     setApp(pixiApp);
                 });
@@ -230,8 +233,11 @@ const PixiApp = forwardRef(({
                     hudRef.current = app.stage.addChild(new PIXI.Container());
                     const textStyle = new PIXI.TextStyle({
                         fontSize: 24,
-                        fill: 0x000000,
-                        stroke: {color: 0xffffff, width: 4},
+                        fill: TEXT_COLOR,
+                        stroke: {
+                            color: BACKGROUND_COLOR, 
+                            width: 4
+                        },
                     });
                     timestepTextRef.current = hudRef.current.addChild(
                         new PIXI.Text({style: textStyle})
