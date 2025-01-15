@@ -16,6 +16,8 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
+        with:
+          node-version: lts/Jod
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
