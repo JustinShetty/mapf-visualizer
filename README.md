@@ -9,7 +9,7 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 - [x] Playback control (play, pause, reset, speed adjustment, etc.)
 - [x] Timestep display
 - [x] Playback control tooltips
-- [ ] Agent ID display
+- [x] Agent ID display
 - [x] Agent coloring
 - [ ] Per-agent path drawing
 - [ ] Keybindings for animation control
