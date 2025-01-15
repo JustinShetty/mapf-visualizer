@@ -172,7 +172,7 @@ const PixiApp = forwardRef(({
             let idText = sprite.addChild(new PIXI.Text({
                 text: `${agentId}`,
                 style: {
-                    fontfamily: 'Arial',
+                    fontFamily: 'Arial',
                     fontSize: circle.width / 2,
                     fill: TEXT_COLOR,
                 }
