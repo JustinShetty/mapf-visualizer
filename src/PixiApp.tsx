@@ -120,14 +120,14 @@ const PixiApp = forwardRef(({
             sprite.y = scalePosition(sprite.y);
 
             // orientation-aware visualization has two objects for each sprite
-            let circle_container: PIXI.Container = sprite.children[0];
-            if (circle_container === undefined || circle_container.children.length < 2) return;
+            let circleContainer: PIXI.Container = sprite.children[0];
+            if (circleContainer === undefined || circleContainer.children.length < 2) return;
 
             // Interpolate rotation
             const startRotation = orientationToRotation(startPose.orientation);
             const endRotation = orientationToRotation(endPose.orientation);
 
-            circle_container.rotation =
+            circleContainer.rotation =
                 startRotation +
                 (endRotation - startRotation) * interpolationProgress;
         }); 
@@ -140,36 +140,36 @@ const PixiApp = forwardRef(({
         const sprites: PIXI.Container[] = [];
     
         // Check if the solution is orientation-aware
-        const orientation_aware: boolean = solution[0][0].orientation !== Orientation.NONE;
+        const orientationAware: boolean = solution[0][0].orientation !== Orientation.NONE;
 
         // Create sprites for each entity in the first configuration
         let agents = viewport.addChild(new PIXI.Container());
-        let agent_id = 0;
+        let agentId = 0;
         solution[0].forEach(() => {
             const sprite = agents.addChild(new PIXI.Container());
-            let circle_container = sprite.addChild(new PIXI.Container());
-            let circle = circle_container.addChild(new PIXI.Graphics());
-            let agent_color = AGENT_COLORS[agent_id++ % AGENT_COLORS.length];
+            let circleContainer = sprite.addChild(new PIXI.Container());
+            let circle = circleContainer.addChild(new PIXI.Graphics());
+            let agentColor = AGENT_COLORS[agentId++ % AGENT_COLORS.length];
             circle
                 .circle(0, 0, GRID_UNIT_TO_PX/3)
-                .fill(agent_color);
-            if (orientation_aware) {
+                .fill(agentColor);
+            if (orientationAware) {
                 const radius = circle.width / 2;
-                let triangle = circle_container.addChild(new PIXI.Graphics());
+                let triangle = circleContainer.addChild(new PIXI.Graphics());
                 triangle
                     .poly([0, radius, 0, -radius, radius, 0])
                     .fill(0xffffff);
             }
-            let id_text = sprite.addChild(new PIXI.Text({
-                text: `${agent_id}`,
+            let idText = sprite.addChild(new PIXI.Text({
+                text: `${agentId}`,
                 style: {
                     fontfamily: 'Arial',
                     fontSize: circle.width / 2,
                     fill: 0x000000,
                 }
             }));
-            id_text.x = -id_text.width / 2;
-            id_text.y = -id_text.height / 2;
+            idText.x = -idText.width / 2;
+            idText.y = -idText.height / 2;
             sprites.push(sprite);
         });
     
