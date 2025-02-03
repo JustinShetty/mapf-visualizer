@@ -202,8 +202,6 @@ const PixiApp = forwardRef(({
             if (currentTimestep >= solution.length - 1) {
                 if (loopAnimationRef.current) {
                     resetTimestep();
-                } else {
-                    viewport.removeChild(agents);
                 }
                 return;
             }
