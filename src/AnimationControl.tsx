@@ -14,6 +14,21 @@ import CropFreeIcon from '@mui/icons-material/CropFree';
 import Tooltip from '@mui/material/Tooltip';
 import LooksOneIcon from '@mui/icons-material/LooksOne';
 import LooksOneOutlinedIcon from '@mui/icons-material/LooksOneOutlined';
+import { useEffect } from 'react';
+
+const SPEED_STEP = 0.2;
+const SPEED_MAX = 10;
+const SPEED_MIN = 0.2;
+
+const STEP_BACKWARD_KEY = 'ArrowLeft';
+const PLAY_PAUSE_KEY = ' ';
+const STEP_FORWARD_KEY = 'ArrowRight';
+const RESTART_KEY = 'r';
+const LOOP_KEY = 'l';
+const FIT_VIEW_KEY = 'f';
+const SHOW_AGENT_ID_KEY = 'a';
+const SPEED_UP_KEY = 'ArrowUp';
+const SPEED_DOWN_KEY = 'ArrowDown';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -51,23 +66,51 @@ function AnimationControl({
         }
     };
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === STEP_BACKWARD_KEY) {
+                onSkipBackward();
+            } else if (event.key === PLAY_PAUSE_KEY) {
+                onPlayAnimationChange(!playAnimation);
+            }  else if (event.key === STEP_FORWARD_KEY) {
+                onSkipForward();
+            } else if (event.key === RESTART_KEY) {
+                onRestart();
+            } else if (event.key === LOOP_KEY) {
+                onLoopAnimationChange(!loopAnimation);
+            } else if (event.key === FIT_VIEW_KEY) {
+                onFitView();
+            } else if (event.key === SHOW_AGENT_ID_KEY) {
+                onShowAgentIdChange(!showAgentId);
+            } else if (event.key === SPEED_UP_KEY && speed + SPEED_STEP <= SPEED_MAX) {
+                onSpeedChange(speed + SPEED_STEP);
+            } else if (event.key === SPEED_DOWN_KEY && speed - SPEED_STEP >= SPEED_MIN) {
+                onSpeedChange(speed - SPEED_STEP);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [playAnimation, onPlayAnimationChange]);
+
     return (
         <Stack direction="column" spacing={2}>
             <Box display="flex" justifyContent="center">
                 <ButtonGroup size="large" variant="outlined">
-                    <Tooltip title="Backward one step">
+                    <Tooltip title={`Backward one step (${STEP_BACKWARD_KEY})`}>
                         <Button onClick={onSkipBackward}>
                             <SkipPreviousIcon />
                         </Button>   
                     </Tooltip>    
-                    <Tooltip title={playAnimation ? "Pause" : "Play"}>     
+                    <Tooltip title={(playAnimation ? "Pause" : "Play") + ` (spacebar)`}>     
                         <Button onClick={() => onPlayAnimationChange(!playAnimation)}>
                             {playAnimation ? 
                             <PauseTwoToneIcon /> : 
                             <PlayArrowIcon />}
                         </Button>
                     </Tooltip>
-                    <Tooltip title="Forward one step">
+                    <Tooltip title={`Forward one step (${STEP_FORWARD_KEY})`}>
                         <Button onClick={onSkipForward}>
                             <SkipNextIcon />
                         </Button>
@@ -76,24 +119,24 @@ function AnimationControl({
             </Box>
             <Box display="flex" justifyContent="center">
                 <ButtonGroup size="large" variant="outlined">
-                    <Tooltip title="Restart animation">
+                    <Tooltip title={`Restart animation (${RESTART_KEY})`}>
                         <Button onClick={onRestart}>
                             <RestartAltIcon />
                         </Button>
                     </Tooltip>
-                    <Tooltip title={loopAnimation ? "Disable loop" : "Enable loop"}>
+                    <Tooltip title={(loopAnimation ? "Disable loop" : "Enable loop") + ` (${LOOP_KEY})`}>
                         <Button onClick={() => onLoopAnimationChange(!loopAnimation)}>
                             {loopAnimation ? 
                             <RepeatOnIcon /> : 
                             <RepeatIcon />}
                         </Button>
                     </Tooltip>
-                    <Tooltip title="Reset view">
+                    <Tooltip title={`Reset view (${FIT_VIEW_KEY})`}>
                         <Button onClick={onFitView}>
                             <CropFreeIcon />
                         </Button>
                     </Tooltip>
-                    <Tooltip title={showAgentId ? "Hide agent ID" : "Show agent ID"}>
+                    <Tooltip title={(showAgentId ? "Hide agent ID" : "Show agent ID") + ` (${SHOW_AGENT_ID_KEY})`}>
                         <Button onClick={() => onShowAgentIdChange(!showAgentId)}>
                             {showAgentId ?
                             <LooksOneIcon />:
@@ -103,13 +146,20 @@ function AnimationControl({
                 </ButtonGroup>
             </Box>
             <Box display='flex' justifyContent='center'>
-                <Tooltip title="Adjust animation step size (speed)">
+                <Tooltip 
+                    title={
+                        <div style={{ textAlign: 'center' }}>
+                            Adjust animation step size
+                            ({SPEED_UP_KEY}/{SPEED_DOWN_KEY})
+                        </div>
+                    }
+                >
                     <Slider
                         value={speed}
-                        step={0.2}
+                        step={SPEED_STEP}
                         marks
-                        min={0.2}
-                        max={10}
+                        min={SPEED_MIN}
+                        max={SPEED_MAX}
                         valueLabelDisplay="auto"
                         onChange={handleSliderChange}
                         sx={{ width: '50%' }}
@@ -117,7 +167,7 @@ function AnimationControl({
                 </Tooltip>
             </Box>
         </Stack>
-    );
+    );   
 }
 
 export default AnimationControl;

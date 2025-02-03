@@ -12,7 +12,8 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 - [x] Agent ID display
 - [x] Agent coloring
 - [ ] Per-agent path drawing
-- [ ] Keybindings for animation control
+- [x] Keybindings for animation control
+- [ ] Built-in screenshot capture with keybind
 
 ## Features
 
