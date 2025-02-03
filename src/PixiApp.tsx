@@ -61,6 +61,8 @@ const PixiApp = forwardRef(({
     const hudRef = useRef<PIXI.Container | null>(null);
     const timestepTextRef = useRef<PIXI.Text | null>(null);
     const showAgentIdRef = useRef(false);
+    const tickerCallbackRef = useRef<() => void>(() => {});
+    const agentsRef = useRef<PIXI.Container | null>(null);
 
     // Scale a position from grid units to pixels
     const scalePosition = (position: number) : number => {
@@ -147,14 +149,18 @@ const PixiApp = forwardRef(({
     // Animate the solution
     const animateSolution = useCallback(() => {
         if (app === null || viewport === null || solution === null) return;
+        if (tickerCallbackRef.current) {
+            app.ticker.remove(tickerCallbackRef.current);
+            if (agentsRef.current) viewport.removeChild(agentsRef.current);
+        }
         resetTimestep();
-        const sprites: PIXI.Container[] = [];
     
         // Check if the solution is orientation-aware
         const orientationAware: boolean = solution[0][0].orientation !== Orientation.NONE;
 
-        // Create sprites for each entity in the first configuration
+        // Create agents for each entity in the first configuration
         const agents = viewport.addChild(new PIXI.Container());
+        agentsRef.current = agents;
         let agentId = 0;
         solution[0].forEach(() => {
             const sprite = agents.addChild(new PIXI.Container());
@@ -184,14 +190,12 @@ const PixiApp = forwardRef(({
             idText.scale.set(1 / fontSuperResolutionScale, 1 / fontSuperResolutionScale);
             idText.x = -idText.width / 2;
             idText.y = -idText.height / 2;
-            sprites.push(sprite);
         });
     
         const animate = () => {
             if (playAnimationRef.current === true) {
                 timestepRef.current += stepSize();
             }
-            // console.log("timestepRef.current: ", timestepRef.current)
             const currentTimestep = Math.floor(timestepRef.current);
             const interpolationProgress = timestepRef.current - currentTimestep;
 
@@ -206,9 +210,10 @@ const PixiApp = forwardRef(({
             if (timestepTextRef.current) {
                 timestepTextRef.current.text = `Timestep: ${timestepRef.current.toFixed(1)}`;
             }
-            moveAndRotateSprites(sprites, currentTimestep, interpolationProgress)
+            moveAndRotateSprites(agents.children as PIXI.Container[], currentTimestep, interpolationProgress)
         }
-        app.ticker.add(animate)
+        app.ticker.add(animate);
+        tickerCallbackRef.current = animate;
     }, [app, viewport, solution, moveAndRotateSprites]);
 
     // Initialize the app and viewport when the canvas is ready
