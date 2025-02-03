@@ -106,9 +106,11 @@ const PixiApp = forwardRef(({
         );
     }, [viewport, grid]);
 
-    const moveAndRotateSprites = useCallback((sprites: PIXI.Container[], currentTimestep: number, interpolationProgress: number) => {
+    const moveAndRotateSprites = useCallback((sprites: PIXI.Container[], current_time: number) => {
         if (solution === null) return
 
+        const currentTimestep = Math.floor(current_time);
+        const interpolationProgress = current_time - currentTimestep;
         const currentState = solution[currentTimestep];
         const nextState = solution[Math.min(currentTimestep + 1, solution.length - 1)];
 
@@ -194,6 +196,10 @@ const PixiApp = forwardRef(({
         });
     
         const animate = () => {
+            if(timestepTextRef.current) {
+                timestepTextRef.current.text = `Timestep: ${timestepRef.current.toFixed(1)}`;
+            }
+
             if (playAnimationRef.current === true) {
                 if (timestepRef.current < solution.length - 1) {
                     timestepRef.current += stepSize();
@@ -202,12 +208,7 @@ const PixiApp = forwardRef(({
                 }
             }
 
-            const currentTimestep = Math.floor(timestepRef.current);
-            const interpolationProgress = timestepRef.current - currentTimestep;
-            if (timestepTextRef.current) {
-                timestepTextRef.current.text = `Timestep: ${timestepRef.current.toFixed(1)}`;
-            }
-            moveAndRotateSprites(agents.children as PIXI.Container[], currentTimestep, interpolationProgress)
+            moveAndRotateSprites(agents.children as PIXI.Container[], timestepRef.current);
         }
         app.ticker.add(animate);
         tickerCallbackRef.current = animate;
