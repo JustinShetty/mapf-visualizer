@@ -195,17 +195,15 @@ const PixiApp = forwardRef(({
     
         const animate = () => {
             if (playAnimationRef.current === true) {
-                timestepRef.current += stepSize();
-            }
-            const currentTimestep = Math.floor(timestepRef.current);
-            const interpolationProgress = timestepRef.current - currentTimestep;
-
-            if (currentTimestep > solution.length - 1) {
-                if (loopAnimationRef.current) {
+                if (timestepRef.current < solution.length - 1) {
+                    timestepRef.current += stepSize();
+                } else if (loopAnimationRef.current) {
                     resetTimestep();
                 }
-                return;
             }
+
+            const currentTimestep = Math.floor(timestepRef.current);
+            const interpolationProgress = timestepRef.current - currentTimestep;
             if (timestepTextRef.current) {
                 timestepTextRef.current.text = `Timestep: ${timestepRef.current.toFixed(1)}`;
             }
