@@ -225,6 +225,7 @@ const PixiApp = forwardRef(({
                     height: height, 
                     canvas: canvas, 
                     background: BACKGROUND_COLOR,
+                    antialias: true,  // for smooooooth circles
                 }).then(() => {
                     setApp(pixiApp);
                 });
