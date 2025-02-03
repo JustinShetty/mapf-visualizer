@@ -1,10 +1,9 @@
-import Stack from '@mui/material/Stack';
 import GraphLoader from './GraphLoader';
 import SolutionLoader from './SolutionLoader';
 import AnimationControl from './AnimationControl';
 import { Graph } from './Graph';
-import { Solution } from './Solution';
-import { Divider } from '@mui/material';
+import { parseSolution, Solution } from './Solution';
+import { Divider, Stack, Button } from '@mui/material';
 
 interface ConfigBarProps {
   onGraphChange: (graph: Graph) => void;
@@ -40,8 +39,36 @@ function ConfigBar({
   onShowAgentIdChange,
 }: ConfigBarProps) {
   const repoName = "JustinShetty/mapf-visualizer";
+
+  const blurActiveElement = () => {
+    // Blur (remove focus from) the file input
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
+
+  const handleLoadDemo = (mapName: string) => {
+    console.log(`Loading demo ${mapName}`);
+    fetch(`${import.meta.env.BASE_URL}/${mapName}.map`)
+      .then((response) => response.text())
+      .then((text) => {
+        onGraphChange(new Graph(text));
+        return fetch(`${import.meta.env.BASE_URL}/demo_${mapName}.txt`);
+      })
+      .then((response) => response.text())
+      .then((text) => {
+        onSolutionChange(parseSolution(text));
+      });
+    blurActiveElement();
+  };
+
   return (
-    <Stack direction="column" spacing={2}>
+    <Stack direction="column" spacing={2} sx={{padding: 2}} >
+      <Stack direction="column" spacing={1}>
+        <Button variant="outlined" onClick={() => handleLoadDemo("2x2")}>Load 2x2 demo</Button>
+        <Button variant="outlined" onClick={() => handleLoadDemo("random-32-32-20")}>Load 32x32 demo</Button>
+      </Stack>
+      <Divider />
       <GraphLoader onGraphChange={onGraphChange}/>
       <Divider />
       <SolutionLoader onSolutionChange={onSolutionChange}/>

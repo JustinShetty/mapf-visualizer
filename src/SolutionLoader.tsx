@@ -1,6 +1,6 @@
 import { Solution, parseSolution } from "./Solution";
 import { MuiFileInput } from "mui-file-input";
-import { Box } from "@mui/material";
+import { Stack } from "@mui/material";
 import React from "react";
 
 interface SolutionLoaderProps {
@@ -24,14 +24,15 @@ function SolutionLoader({ onSolutionChange }: SolutionLoaderProps) {
     }
 
     return (
-        <Box>
+        <Stack direction="column" spacing={2}>
             <h1>Solution</h1>
             <MuiFileInput 
                 value={value} 
                 onChange={handleChange} 
                 placeholder="Select a solution file"
+                sx={{width: '100%'}}
             />
-        </Box>
+        </Stack>
     );
 }
 

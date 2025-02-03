@@ -49,7 +49,7 @@ function App() {
   return (
     <StrictMode>
     <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={0}>
         <Grid size="grow">
           <Visualizer
             pixiAppRef = {pixiAppRef}

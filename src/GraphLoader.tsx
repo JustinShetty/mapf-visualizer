@@ -1,5 +1,5 @@
 import { MuiFileInput } from "mui-file-input";
-import { Box } from "@mui/material";
+import { Stack } from "@mui/material";
 import React from "react";
 import { Graph } from "./Graph";
 
@@ -26,14 +26,15 @@ function GraphLoader({ onGraphChange }: GraphLoaderProps) {
     }
 
     return (
-        <Box>
+        <Stack direction="column" spacing={2} >
             <h1>Map</h1>
             <MuiFileInput 
                 value={value} 
                 onChange={handleChange} 
                 placeholder="Select a map file"
+                sx={{width: '100%'}}
             />
-        </Box>
+        </Stack>
     );
 }
 
