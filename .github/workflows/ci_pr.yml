@@ -1,4 +1,4 @@
-name: Build (PR)
+name: CI (PR)
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Lint & Build (PR)
     runs-on: ubuntu-latest
 
     steps:
