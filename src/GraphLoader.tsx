@@ -16,6 +16,10 @@ function GraphLoader({ onGraphChange }: GraphLoaderProps) {
             newValue.text().then((text) => {
                 const g = new Graph(text);
                 onGraphChange(g);
+                // Blur (remove focus from) the file input
+                if (document.activeElement instanceof HTMLElement) {
+                    document.activeElement.blur();
+                }
             });
         }
 

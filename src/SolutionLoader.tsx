@@ -15,6 +15,10 @@ function SolutionLoader({ onSolutionChange }: SolutionLoaderProps) {
         if (newValue) {
             newValue.text().then((text) => {
                 onSolutionChange(parseSolution(text));
+                // Blur (remove focus from) the file input
+                if (document.activeElement instanceof HTMLElement) {
+                    document.activeElement.blur();
+                }
             });
         }
     }
