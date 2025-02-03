@@ -48,6 +48,8 @@ const PixiApp = forwardRef(({
     loopAnimation,
     showAgentId,
 }: PixiAppProps, ref) => {
+    // this is a mess of state and refs, but how I got everything to work...
+    // maybe someday I will clean this up or maybe someone who knows React better than me can help
     const [app, setApp] = useState<PIXI.Application | null>(null);
     const [viewport, setViewport] = useState<Viewport | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -274,7 +276,8 @@ const PixiApp = forwardRef(({
             if (grid) viewport.removeChild(grid);
             setGrid(drawGrid(viewport, graph));
         }
-    }, [app, graph, grid, viewport]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [app, graph, viewport]); // Excluding 'grid' to prevent infinite loop
 
     // Fit the viewport and try to animate the solution when the grid or solution changes
     useEffect(() => {
