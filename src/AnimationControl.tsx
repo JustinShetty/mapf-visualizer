@@ -92,7 +92,7 @@ function AnimationControl({
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [playAnimation, onPlayAnimationChange]);
+    }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, onSkipForward, onSpeedChange, showAgentId, speed]);
 
     return (
         <Stack direction="column" spacing={2}>

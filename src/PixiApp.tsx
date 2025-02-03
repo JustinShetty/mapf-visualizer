@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react';
 import * as PIXI from 'pixi.js';
 import { Viewport } from 'pixi-viewport';
 import { Graph } from './Graph';
@@ -20,11 +20,11 @@ interface PixiAppProps {
 }
 
 function drawGrid(viewport: Viewport, graph: Graph) : PIXI.Container {
-    let grid = viewport.addChild(new PIXI.Container());
+    const grid = viewport.addChild(new PIXI.Container());
 
     for (let x: number = 0; x < graph.width; x++) {
         for (let y: number = 0; y < graph.height; y++) {
-            let cell = grid.addChild(new PIXI.Graphics());
+            const cell = grid.addChild(new PIXI.Graphics());
             cell.rect(x*GRID_UNIT_TO_PX, y*GRID_UNIT_TO_PX, GRID_UNIT_TO_PX, GRID_UNIT_TO_PX)
             .stroke({color: GRID_COLOR, width: 10});
             if (graph.obstacles.has(new Coordinate(x, y).toString())) {
@@ -67,7 +67,7 @@ const PixiApp = forwardRef(({
 
     function stepSize(): number {
         // ticker is called at ~60 Hz
-        let totalFramesPerStep = 60 / speedRef.current;
+        const totalFramesPerStep = 60 / speedRef.current;
         return 1 / totalFramesPerStep;
     }
 
@@ -92,16 +92,16 @@ const PixiApp = forwardRef(({
     }));
 
     // Fit the viewport to the grid
-    const fit = () => {
+    const fit = useCallback(() => {
         if (viewport === null || grid === null) return;
         viewport.fitWorld();
         viewport.moveCenter(
             grid.position.x + grid.width / 2,
             grid.position.y + grid.height / 2
-        )
-    }
+        );
+    }, [viewport, grid]);
 
-    const moveAndRotateSprites = (sprites: PIXI.Container[], currentTimestep: number, interpolationProgress: number) => {
+    const moveAndRotateSprites = useCallback((sprites: PIXI.Container[], currentTimestep: number, interpolationProgress: number) => {
         if (solution === null) return
 
         const currentState = solution[currentTimestep];
@@ -110,7 +110,7 @@ const PixiApp = forwardRef(({
         // Interpolate between current and next states
         sprites.forEach((sprite, index) => {
             // Show or hide agent ID
-            let idText = sprite.children[1];
+            const idText = sprite.children[1];
             if (idText !== undefined) {
                 idText.visible = showAgentIdRef.current;
             }
@@ -129,7 +129,7 @@ const PixiApp = forwardRef(({
             sprite.y = scalePosition(sprite.y);
 
             // orientation-aware visualization has two objects for each sprite
-            let circleContainer: PIXI.Container = sprite.children[0];
+            const circleContainer: PIXI.Container = sprite.children[0];
             if (circleContainer === undefined || circleContainer.children.length < 2) return;
 
             // Interpolate rotation
@@ -140,10 +140,10 @@ const PixiApp = forwardRef(({
                 startRotation +
                 (endRotation - startRotation) * interpolationProgress;
         }); 
-    }
+    }, [solution]);
 
     // Animate the solution
-    const animateSolution = () => {
+    const animateSolution = useCallback(() => {
         if (app === null || viewport === null || solution === null) return;
         resetTimestep();
         const sprites: PIXI.Container[] = [];
@@ -152,24 +152,24 @@ const PixiApp = forwardRef(({
         const orientationAware: boolean = solution[0][0].orientation !== Orientation.NONE;
 
         // Create sprites for each entity in the first configuration
-        let agents = viewport.addChild(new PIXI.Container());
+        const agents = viewport.addChild(new PIXI.Container());
         let agentId = 0;
         solution[0].forEach(() => {
             const sprite = agents.addChild(new PIXI.Container());
-            let circleContainer = sprite.addChild(new PIXI.Container());
-            let circle = circleContainer.addChild(new PIXI.Graphics());
-            let agentColor = AGENT_COLORS[agentId++ % AGENT_COLORS.length];
+            const circleContainer = sprite.addChild(new PIXI.Container());
+            const circle = circleContainer.addChild(new PIXI.Graphics());
+            const agentColor = AGENT_COLORS[agentId++ % AGENT_COLORS.length];
             circle
                 .circle(0, 0, GRID_UNIT_TO_PX/3)
                 .fill(agentColor);
             if (orientationAware) {
                 const radius = circle.width / 2;
-                let triangle = circleContainer.addChild(new PIXI.Graphics());
+                const triangle = circleContainer.addChild(new PIXI.Graphics());
                 triangle
                     .poly([0, radius, 0, -radius, radius, 0])
                     .fill(BACKGROUND_COLOR);
             }
-            let idText = sprite.addChild(new PIXI.Text({
+            const idText = sprite.addChild(new PIXI.Text({
                 text: `${agentId}`,
                 style: {
                     fontFamily: 'Arial',
@@ -177,7 +177,7 @@ const PixiApp = forwardRef(({
                     fill: TEXT_COLOR,
                 }
             }));
-            let fontSuperResolutionScale = 2;
+            const fontSuperResolutionScale = 2;
             idText.style.fontSize *= fontSuperResolutionScale;
             idText.scale.set(1 / fontSuperResolutionScale, 1 / fontSuperResolutionScale);
             idText.x = -idText.width / 2;
@@ -190,8 +190,8 @@ const PixiApp = forwardRef(({
                 timestepRef.current += stepSize();
             }
             // console.log("timestepRef.current: ", timestepRef.current)
-            let currentTimestep = Math.floor(timestepRef.current);
-            let interpolationProgress = timestepRef.current - currentTimestep;
+            const currentTimestep = Math.floor(timestepRef.current);
+            const interpolationProgress = timestepRef.current - currentTimestep;
 
             if (currentTimestep >= solution.length - 1) {
                 if (loopAnimationRef.current) {
@@ -207,7 +207,7 @@ const PixiApp = forwardRef(({
             moveAndRotateSprites(sprites, currentTimestep, interpolationProgress)
         }
         app.ticker.add(animate)
-    }
+    }, [app, viewport, solution, moveAndRotateSprites]);
 
     // Initialize the app and viewport when the canvas is ready
     useEffect(() => {
@@ -257,7 +257,7 @@ const PixiApp = forwardRef(({
             }
         }
         return () => {app?.stop()};
-    }, [app, viewport]);
+    }, [app, viewport, height, width]);
 
     // Resize the viewport when the width or height changes
     useEffect(() => {
@@ -266,7 +266,7 @@ const PixiApp = forwardRef(({
             viewport.resize(width, height);
             fit();
         }
-    }, [width, height]);
+    }, [app, fit, viewport, width, height]);
 
     // Draw the grid when the graph changes
     useEffect(() => {
@@ -274,13 +274,13 @@ const PixiApp = forwardRef(({
             if (grid) viewport.removeChild(grid);
             setGrid(drawGrid(viewport, graph));
         }
-    }, [graph]);
+    }, [app, graph, grid, viewport]);
 
     // Fit the viewport and try to animate the solution when the grid or solution changes
     useEffect(() => {
         fit();
         animateSolution();
-    }, [grid, solution]);
+    }, [grid, solution, animateSolution, fit]);
 
     // Update the playAnimationRef when the playAnimation changes
     useEffect(() => {

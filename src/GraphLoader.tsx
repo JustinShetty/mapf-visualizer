@@ -14,7 +14,7 @@ function GraphLoader({ onGraphChange }: GraphLoaderProps) {
         setValue(newValue);
         if (newValue) {
             newValue.text().then((text) => {
-                let g = new Graph(text);
+                const g = new Graph(text);
                 onGraphChange(g);
             });
         }
