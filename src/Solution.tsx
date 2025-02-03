@@ -42,21 +42,21 @@ export type Config = Pose[];
 export type Solution = Config[];
 
 export function parseSolution(text: string): Solution {
-    let lines = text.trim().split("\n");
-    let solution: Solution = [];
+    const lines = text.trim().split("\n");
+    const solution: Solution = [];
 
-    for (let line of lines) {
-        let config: Config = [];
+    for (const line of lines) {
+        const config: Config = [];
 
         const pos_re = /(\((\d+),(\d+),?([XY]{1}_[A-Z]{4,5})?\),)/g;
         while (true) {
-            let m = pos_re.exec(line);
+            const m = pos_re.exec(line);
             if (m === null) break;
             if (m === null || m.length !== 5) throw new Error("Invalid solution");
-            let x = Number(m[2]);
-            let y = Number(m[3]);
-            let o = orientationFromString(m[4]);
-            let pose = new Pose(new Coordinate(x, y), o);
+            const x = Number(m[2]);
+            const y = Number(m[3]);
+            const o = orientationFromString(m[4]);
+            const pose = new Pose(new Coordinate(x, y), o);
             config.push(pose);
         }
         if (config.length === 0) throw new Error("Invalid solution");

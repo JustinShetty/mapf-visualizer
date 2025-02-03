@@ -15,7 +15,7 @@ export class Coordinate {
 export class Graph {
     public width: number = 0;
     public height: number = 0;
-    public obstacles: Map<String, boolean> = new Map();
+    public obstacles: Map<string, boolean> = new Map();
 
     constructor(fileContent: string) {
         this.parseGraph(fileContent);
@@ -33,7 +33,7 @@ export class Graph {
         this.height = height;
         const width = Number(lines[2].split(" ")[1]);
         this.width = width;
-        let graph = lines.slice(4);
+        const graph = lines.slice(4);
         for (let y = 0; y < graph.length; y++) {
             if (graph[y].length !== width) {
                 throw new Error('Invalid map file, check width');
