@@ -81,11 +81,12 @@ const PixiApp = forwardRef(({
 
     useImperativeHandle(ref, () => ({
         skipBackward: () => {
-            timestepRef.current = Math.max(0, speedRef.current);
+            timestepRef.current = Math.max(0, timestepRef.current - speedRef.current);
         },
         skipForward: () => {
-            console.log(speedRef.current)
-            timestepRef.current += speedRef.current;
+            if (solution) {
+                timestepRef.current = Math.min(timestepRef.current + speedRef.current, solution.length - 1);
+            }
         },
         restart: () => {
             resetTimestep();
@@ -109,7 +110,7 @@ const PixiApp = forwardRef(({
         if (solution === null) return
 
         const currentState = solution[currentTimestep];
-        const nextState = solution[currentTimestep + 1];
+        const nextState = solution[Math.min(currentTimestep + 1, solution.length - 1)];
 
         // Interpolate between current and next states
         sprites.forEach((sprite, index) => {
@@ -199,7 +200,7 @@ const PixiApp = forwardRef(({
             const currentTimestep = Math.floor(timestepRef.current);
             const interpolationProgress = timestepRef.current - currentTimestep;
 
-            if (currentTimestep >= solution.length - 1) {
+            if (currentTimestep > solution.length - 1) {
                 if (loopAnimationRef.current) {
                     resetTimestep();
                 }
