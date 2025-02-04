@@ -52,6 +52,10 @@ const PixiApp = forwardRef(({
 }: PixiAppProps, ref) => {
     // this is a mess of state and refs, but how I got everything to work...
     // maybe someday I will clean this up or maybe someone who knows React better than me can help
+    // 
+    // the variables that are used inside the animation callbacks must
+    // be stored in refs because the callbacks are created "once" and
+    // the variables are updated outside of the callbacks
     const [app, setApp] = useState<PIXI.Application | null>(null);
     const [viewport, setViewport] = useState<Viewport | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
