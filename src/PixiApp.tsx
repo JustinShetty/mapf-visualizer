@@ -274,7 +274,7 @@ const PixiApp = forwardRef(({
     
         const animate = () => {
             if(timestepTextRef.current) {
-                timestepTextRef.current.text = `Timestep: ${timestepRef.current.toFixed(1)}`;
+                timestepTextRef.current.text = `${timestepRef.current.toFixed(1)} / ${(solution.length - 1).toFixed(1)}`;
             }
 
             if (playAnimationRef.current === true) {
@@ -327,6 +327,8 @@ const PixiApp = forwardRef(({
                     const textStyle = new PIXI.TextStyle({
                         fontSize: 24,
                         fill: TEXT_COLOR,
+                        fontFamily: "Courier New",
+                        fontWeight: "bold",
                         stroke: {
                             color: BACKGROUND_COLOR, 
                             width: 4
