@@ -89,11 +89,11 @@ const PixiApp = forwardRef(({
 
     useImperativeHandle(ref, () => ({
         skipBackward: () => {
-            timestepRef.current = Math.max(0, timestepRef.current - speedRef.current);
+            timestepRef.current = Math.max(0, timestepRef.current - stepSize());
         },
         skipForward: () => {
             if (solution) {
-                timestepRef.current = Math.min(timestepRef.current + speedRef.current, solution.length - 1);
+                timestepRef.current = Math.min(timestepRef.current + stepSize(), solution.length - 1);
             }
         },
         restart: () => {
