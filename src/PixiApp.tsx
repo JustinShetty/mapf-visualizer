@@ -159,30 +159,35 @@ const PixiApp = forwardRef(({
         agents.forEach((_agent, index) => {
             const path = agentPathsRef.current[index];
 
-            while (path.children.length > currentTimestep) {
+            // Remove segments beyond and including the current time 
+            // We have to remove and redraw the last segment because
+            // we can't tell whether it's a complete or an unfinished
+            // partial segment
+            while (path.children.length >= currentTimestep) {
+                if (path.children.length === 0) break;
                 path.removeChildAt(path.children.length - 1);
             }
 
-            // confirm full segments
-            for(let i = 1; i <= currentTimestep; i++) {
-                if (i > path.children.length) {
-                    const segment = path.addChild(new PIXI.Graphics());
-                    segment.moveTo(
-                        scalePosition(solution[i - 1][index].position.x),
-                        scalePosition(solution[i - 1][index].position.y)
-                    );
-                    segment.lineTo(
-                        scalePosition(solution[i][index].position.x),
-                        scalePosition(solution[i][index].position.y)
-                    );
-                    segment.stroke({ 
-                        width: 8, 
-                        color: AGENT_COLORS[index % AGENT_COLORS.length], 
-                        cap: "round" 
-                    });
-                }
+            // Full segments
+            while (path.children.length < currentTimestep) {
+                const segIndex = path.children.length;
+                const segment = path.addChild(new PIXI.Graphics());
+                segment.moveTo(
+                    scalePosition(solution[segIndex][index].position.x),
+                    scalePosition(solution[segIndex][index].position.y)
+                );
+                segment.lineTo(
+                    scalePosition(solution[segIndex + 1][index].position.x),
+                    scalePosition(solution[segIndex + 1][index].position.y)
+                );
+                segment.stroke({ 
+                    width: 8, 
+                    color: AGENT_COLORS[index % AGENT_COLORS.length], 
+                    cap: "round" 
+                });
             }
 
+            // Partial segment
             if (interpolationProgress > 0 && currentTimestep < solution.length - 1) {
                 const segment = path.children.length === currentTimestep ? path.addChild(new PIXI.Graphics()) : path.children[currentTimestep] as PIXI.Graphics;
                 segment.moveTo(
