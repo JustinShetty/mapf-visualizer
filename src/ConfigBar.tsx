@@ -44,7 +44,9 @@ function ConfigBar({
 }: ConfigBarProps) {
   const repoName = "JustinShetty/mapf-visualizer";
   const [mapFile, setMapFile] = React.useState<File | null>(null);
+  const [mapError, setMapError] = React.useState<string | null>(null);
   const [solutionFile, setSolutionFile] = React.useState<File | null>(null);
+  const [solutionError, setSolutionError] = React.useState<string | null>(null);
 
   const blurActiveElement = () => {
     // Blur (remove focus from) the file input
@@ -71,7 +73,12 @@ function ConfigBar({
     setMapFile(newValue);
     if (newValue) {
       newValue.text().then((text) => {
-        onGraphChange(new Graph(text));
+        try {
+          onGraphChange(new Graph(text));
+          setMapError(null);
+        } catch (e) {
+          setMapError(e instanceof Error ? e.message : "An unexpected error occurred");
+        }
         blurActiveElement();
       });
     }
@@ -81,7 +88,12 @@ function ConfigBar({
     setSolutionFile(newValue);
     if (newValue) {
       newValue.text().then((text) => {
-        onSolutionChange(parseSolution(text));
+        try {
+          onSolutionChange(parseSolution(text));
+          setSolutionError(null);
+        } catch (e) {
+          setSolutionError(e instanceof Error ? e.message : "An unexpected error occurred");
+        }
         blurActiveElement();
       });
     }
@@ -102,6 +114,7 @@ function ConfigBar({
             placeholder="Select a map file"
             sx={{width: '100%'}}
         />
+        {mapError && <p style={{color: 'red'}}>{mapError}</p>}
       </Stack>
       <Divider />
       <Stack direction="column" spacing={2}>
@@ -112,6 +125,7 @@ function ConfigBar({
               placeholder="Select a solution file"
               sx={{width: '100%'}}
           />
+          {solutionError && <p style={{color: 'red'}}>{solutionError}</p>}
       </Stack>
       <Divider />
       <AnimationControl 
