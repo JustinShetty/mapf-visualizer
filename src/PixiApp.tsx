@@ -65,7 +65,7 @@ const PixiApp = forwardRef(({
     const showAgentIdRef = useRef(showAgentId);
     const tickerCallbackRef = useRef<() => void>(() => {});
     const agentsRef = useRef<PIXI.Container | null>(null);
-    const agentPathsRef = useRef<PIXI.Container[]>([]); // same order as agentsRef
+    const agentPathsRef = useRef<PIXI.Container>(new PIXI.Container()); // same order as agentsRef
     const tracePathsRef = useRef(tracePaths);
 
     // Scale a position from grid units to pixels
@@ -156,9 +156,7 @@ const PixiApp = forwardRef(({
     const updatePaths = useCallback((agents: PIXI.Container[], currentTime: number) => {
         if (solution === null) return;
 
-        agentPathsRef.current.forEach(path => {
-            path.visible = tracePathsRef.current;
-        });
+        agentPathsRef.current.visible = tracePathsRef.current;
 
         const currentTimestep = Math.floor(currentTime);
         const interpolationProgress = currentTime - currentTimestep;
@@ -171,7 +169,7 @@ const PixiApp = forwardRef(({
                 cap: "round" as const
             };
 
-            const path = agentPathsRef.current[index];
+            const path = agentPathsRef.current.children[index] as PIXI.Container
 
             // Remove segments beyond and including the current time 
             // We have to remove and redraw the last segment because
@@ -230,8 +228,9 @@ const PixiApp = forwardRef(({
 
         // Create paths for each agent in the first configuration
         // Need to do this first so paths are rendered below agents
+        viewport.addChild(agentPathsRef.current);
         solution[0].forEach(() => {
-            agentPathsRef.current.push(viewport.addChild(new PIXI.Container()));
+            agentPathsRef.current.addChild(new PIXI.Container());
         });
 
         // Create agents based on the first configuration

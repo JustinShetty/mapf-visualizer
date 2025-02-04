@@ -75,7 +75,10 @@ function AnimationControl({
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            event.preventDefault();
+            if (!event.ctrlKey && !event.altKey && !event.metaKey) {
+                event.preventDefault();
+            }
+
             if (event.key === STEP_BACKWARD_KEY) {
                 onSkipBackward();
             } else if (event.key === PLAY_PAUSE_KEY) {
