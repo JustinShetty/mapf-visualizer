@@ -224,7 +224,7 @@ const PixiApp = forwardRef(({
         if (tickerCallbackRef.current) {
             app.ticker.remove(tickerCallbackRef.current);
             if (agentsRef.current) viewport.removeChild(agentsRef.current);
-            if (agentPathsRef.current) viewport.removeChild(agentPathsRef.current);
+            if (agentPathsRef.current) agentPathsRef.current.removeChildren();
             if (timestepTextRef.current) timestepTextRef.current.text = "";
         }
         if (solution === null) return;
