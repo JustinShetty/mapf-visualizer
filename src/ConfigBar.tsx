@@ -178,7 +178,7 @@ function ConfigBar({
         onTracePathsChange={onTracePathsChange}
       />
       <Divider />
-      <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white' }}>
+      <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white', width: 'fit-content' }}>
         {repoName}
       </a>
     </Stack>
