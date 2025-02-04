@@ -20,6 +20,8 @@ interface ConfigBarProps {
   onFitView: () => void;
   showAgentId: boolean;
   onShowAgentIdChange: (showAgentId: boolean) => void;
+  tracePaths: boolean;
+  onTracePathsChange: (tracePaths: boolean) => void;
 }
 
 function ConfigBar({ 
@@ -37,6 +39,8 @@ function ConfigBar({
   onFitView,
   showAgentId,
   onShowAgentIdChange,
+  tracePaths,
+  onTracePathsChange,
 }: ConfigBarProps) {
   const repoName = "JustinShetty/mapf-visualizer";
   const [mapFile, setMapFile] = React.useState<File | null>(null);
@@ -123,6 +127,8 @@ function ConfigBar({
         onFitView={onFitView}
         showAgentId={showAgentId}
         onShowAgentIdChange={onShowAgentIdChange}
+        tracePaths={tracePaths}
+        onTracePathsChange={onTracePathsChange}
       />
       <Divider />
       <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white' }}>

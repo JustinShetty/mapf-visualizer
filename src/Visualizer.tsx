@@ -12,6 +12,7 @@ interface VisualizerProps {
   speed: number;
   loopAnimation: boolean;
   showAgentId: boolean;
+  tracePaths: boolean;
 }
 
 function Visualizer({
@@ -22,6 +23,7 @@ function Visualizer({
   speed,
   loopAnimation,
   showAgentId,
+  tracePaths,
 }: VisualizerProps) {
   const [viewportSize, setViewportSize] = useState<{ width: number; height: number } | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -55,6 +57,7 @@ function Visualizer({
           speed={speed}
           loopAnimation={loopAnimation}
           showAgentId={showAgentId}
+          tracePaths={tracePaths}
         />
       }
       </div>

@@ -17,6 +17,7 @@ interface PixiAppProps {
     speed: number;
     loopAnimation: boolean;
     showAgentId: boolean;
+    tracePaths: boolean;
 }
 
 function drawGrid(viewport: Viewport, graph: Graph) : PIXI.Container {
@@ -47,6 +48,7 @@ const PixiApp = forwardRef(({
     speed,
     loopAnimation,
     showAgentId,
+    tracePaths,
 }: PixiAppProps, ref) => {
     // this is a mess of state and refs, but how I got everything to work...
     // maybe someday I will clean this up or maybe someone who knows React better than me can help
@@ -57,13 +59,14 @@ const PixiApp = forwardRef(({
     const playAnimationRef = useRef(playAnimation);
     const timestepRef = useRef(0.0); 
     const speedRef = useRef(1.0);
-    const loopAnimationRef = useRef(true);
+    const loopAnimationRef = useRef(loopAnimation);
     const hudRef = useRef<PIXI.Container | null>(null);
     const timestepTextRef = useRef<PIXI.Text | null>(null);
-    const showAgentIdRef = useRef(false);
+    const showAgentIdRef = useRef(showAgentId);
     const tickerCallbackRef = useRef<() => void>(() => {});
     const agentsRef = useRef<PIXI.Container | null>(null);
     const agentPathsRef = useRef<PIXI.Container[]>([]); // same order as agentsRef
+    const tracePathsRef = useRef(tracePaths);
 
     // Scale a position from grid units to pixels
     const scalePosition = (position: number) : number => {
@@ -151,12 +154,23 @@ const PixiApp = forwardRef(({
     }, [solution]);
 
     const updatePaths = useCallback((agents: PIXI.Container[], currentTime: number) => {
-        if (solution === null) return
+        if (solution === null) return;
+
+        agentPathsRef.current.forEach(path => {
+            path.visible = tracePathsRef.current;
+        });
 
         const currentTimestep = Math.floor(currentTime);
         const interpolationProgress = currentTime - currentTimestep;
 
+        
         agents.forEach((_agent, index) => {
+            const agentLineStyle = { 
+                width: GRID_UNIT_TO_PX / 10, 
+                color: AGENT_COLORS[index % AGENT_COLORS.length], 
+                cap: "round" as const
+            };
+
             const path = agentPathsRef.current[index];
 
             // Remove segments beyond and including the current time 
@@ -180,11 +194,7 @@ const PixiApp = forwardRef(({
                     scalePosition(solution[segIndex + 1][index].position.x),
                     scalePosition(solution[segIndex + 1][index].position.y)
                 );
-                segment.stroke({ 
-                    width: 8, 
-                    color: AGENT_COLORS[index % AGENT_COLORS.length], 
-                    cap: "round" 
-                });
+                segment.stroke(agentLineStyle);
             }
 
             // Partial segment
@@ -201,11 +211,7 @@ const PixiApp = forwardRef(({
                         (solution[currentTimestep + 1][index].position.y - solution[currentTimestep][index].position.y) * interpolationProgress,
                 }
                 segment.lineTo(scalePosition(interpolatedPosition.x), scalePosition(interpolatedPosition.y));
-                segment.stroke({ 
-                    width: 8, 
-                    color: AGENT_COLORS[index % AGENT_COLORS.length], 
-                    cap: "round" 
-                });
+                segment.stroke(agentLineStyle);
             }
         });
     }, [solution]);
@@ -369,6 +375,10 @@ const PixiApp = forwardRef(({
     useEffect(() => {
         showAgentIdRef.current = showAgentId;
     }, [showAgentId]);
+
+    useEffect(() => {
+        tracePathsRef.current = tracePaths;
+    }, [tracePaths]);
 
     return <canvas ref={canvasRef} />
 });

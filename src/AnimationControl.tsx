@@ -15,6 +15,8 @@ import Tooltip from '@mui/material/Tooltip';
 import LooksOneIcon from '@mui/icons-material/LooksOne';
 import LooksOneOutlinedIcon from '@mui/icons-material/LooksOneOutlined';
 import { useEffect } from 'react';
+import DirectionsIcon from '@mui/icons-material/Directions';
+import DirectionsOutlinedIcon from '@mui/icons-material/DirectionsOutlined';
 
 const SPEED_STEP = 0.2;
 const SPEED_MAX = 10;
@@ -29,6 +31,7 @@ const FIT_VIEW_KEY = 'f';
 const SHOW_AGENT_ID_KEY = 'a';
 const SPEED_UP_KEY = 'ArrowUp';
 const SPEED_DOWN_KEY = 'ArrowDown';
+const TRACE_PATHS_KEY = 't';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -43,6 +46,8 @@ interface AnimationControlProps {
     onFitView: () => void;
     showAgentId: boolean;
     onShowAgentIdChange: (showAgentId: boolean) => void;
+    tracePaths: boolean;
+    onTracePathsChange: (tracePaths: boolean) => void;
 }
 
 function AnimationControl({
@@ -58,6 +63,8 @@ function AnimationControl({
     onFitView,
     showAgentId,
     onShowAgentIdChange,
+    tracePaths,
+    onTracePathsChange
 }: AnimationControlProps) {  
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
@@ -68,6 +75,7 @@ function AnimationControl({
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
+            event.preventDefault();
             if (event.key === STEP_BACKWARD_KEY) {
                 onSkipBackward();
             } else if (event.key === PLAY_PAUSE_KEY) {
@@ -86,13 +94,17 @@ function AnimationControl({
                 onSpeedChange(speed + SPEED_STEP);
             } else if (event.key === SPEED_DOWN_KEY && speed - SPEED_STEP >= SPEED_MIN) {
                 onSpeedChange(speed - SPEED_STEP);
+            } else if (event.key === TRACE_PATHS_KEY) {
+                onTracePathsChange(!tracePaths);
             }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, onSkipForward, onSpeedChange, showAgentId, speed]);
+    }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, 
+        onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, 
+        onSkipForward, onSpeedChange, showAgentId, speed, onTracePathsChange, tracePaths]);
 
     return (
         <Stack direction="column" spacing={2}>
@@ -141,6 +153,13 @@ function AnimationControl({
                             {showAgentId ?
                             <LooksOneIcon />:
                             <LooksOneOutlinedIcon />}
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title={(tracePaths ? "Hide paths" : "Show paths") + ` (${TRACE_PATHS_KEY})`}>
+                        <Button onClick={() => onTracePathsChange(!tracePaths)}>
+                            {tracePaths ?
+                            <DirectionsIcon />:
+                            <DirectionsOutlinedIcon />}
                         </Button>
                     </Tooltip>
                 </ButtonGroup>

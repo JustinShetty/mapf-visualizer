@@ -21,6 +21,7 @@ function App() {
   const [speed, setSpeed] = React.useState<number>(1.0);
   const [loopAnimation, setLoopAnimation] = React.useState<boolean>(true);
   const [showAgentId, setShowAgentId] = React.useState<boolean>(false);
+  const [tracePaths, setTracePaths] = React.useState<boolean>(true);
 
   const handleSkipBackward = () => {
     if (pixiAppRef.current?.skipBackward) {
@@ -59,6 +60,7 @@ function App() {
             speed={speed}
             loopAnimation={loopAnimation}
             showAgentId={showAgentId}
+            tracePaths={tracePaths}
           />
         </Grid>
         <Grid size={4}>
@@ -77,6 +79,8 @@ function App() {
             onFitView={handleFitView}
             showAgentId={showAgentId}
             onShowAgentIdChange={(showAgentId: boolean) => setShowAgentId(showAgentId)}
+            tracePaths={tracePaths}
+            onTracePathsChange={(tracePaths: boolean) => setTracePaths(tracePaths)}
           />
         </Grid>
       </Grid>

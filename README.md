@@ -11,7 +11,7 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 - [x] Playback control tooltips
 - [x] Agent ID display
 - [x] Agent coloring
-- [ ] Per-agent path drawing
+- [x] Per-agent path drawing
 - [x] Keybindings for animation control
 - [ ] Built-in screenshot capture with keybind
 
