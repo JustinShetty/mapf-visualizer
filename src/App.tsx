@@ -4,7 +4,7 @@ import ConfigBar from './ConfigBar';
 import Visualizer from './Visualizer';
 import { Graph } from './Graph';
 import { Solution } from './Solution';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { StrictMode, useRef } from 'react';
 
 function App() {
@@ -65,8 +65,9 @@ function App() {
         </Grid>
         <Grid size={4}>
           <ConfigBar
-            onGraphChange={(graph: Graph) => setGraph(graph)}
-            onSolutionChange={(solution: Solution) => setSolution(solution)}
+            graph={graph}
+            onGraphChange={useCallback((graph: Graph | null) => setGraph(graph), [])}
+            onSolutionChange={useCallback((solution: Solution | null) => setSolution(solution), [])}
             playAnimation={playAnimation}
             onPlayAnimationChange={(playAnimation: boolean) => setPlayAnimation(playAnimation)}
             onSkipBackward={handleSkipBackward}

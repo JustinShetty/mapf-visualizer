@@ -220,11 +220,14 @@ const PixiApp = forwardRef(({
 
     // Animate the solution
     const animateSolution = useCallback(() => {
-        if (app === null || viewport === null || solution === null) return;
+        if (app === null || viewport === null) return;
         if (tickerCallbackRef.current) {
             app.ticker.remove(tickerCallbackRef.current);
             if (agentsRef.current) viewport.removeChild(agentsRef.current);
+            if (agentPathsRef.current) viewport.removeChild(agentPathsRef.current);
+            if (timestepTextRef.current) timestepTextRef.current.text = "";
         }
+        if (solution === null) return;
         resetTimestep();
     
         // Check if the solution is orientation-aware
@@ -356,9 +359,9 @@ const PixiApp = forwardRef(({
 
     // Draw the grid when the graph changes
     useEffect(() => {
-        if (app && viewport && graph) {
+        if (app && viewport) {
             if (grid) viewport.removeChild(grid);
-            setGrid(drawGrid(viewport, graph));
+            if (graph) setGrid(drawGrid(viewport, graph));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [app, graph, viewport]); // Excluding 'grid' to prevent infinite loop

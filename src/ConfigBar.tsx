@@ -3,11 +3,13 @@ import { Graph } from './Graph';
 import { parseSolution, Solution } from './Solution';
 import { Divider, Stack, Button } from '@mui/material';
 import { MuiFileInput } from "mui-file-input";
-import React from 'react';
+import React, { useEffect } from 'react';
+import ClearIcon from '@mui/icons-material/Clear';
 
 interface ConfigBarProps {
-  onGraphChange: (graph: Graph) => void;
-  onSolutionChange: (solution: Solution) => void;
+  graph: Graph | null;
+  onGraphChange: (graph: Graph | null) => void;
+  onSolutionChange: (solution: Solution | null) => void;
   playAnimation: boolean;
   onPlayAnimationChange: (playAnimation: boolean) => void;
   onSkipBackward: () => void;
@@ -24,8 +26,9 @@ interface ConfigBarProps {
   onTracePathsChange: (tracePaths: boolean) => void;
 }
 
-function ConfigBar({ 
-  onGraphChange, 
+function ConfigBar({
+  graph,
+  onGraphChange,
   onSolutionChange, 
   playAnimation,
   onPlayAnimationChange,
@@ -66,38 +69,60 @@ function ConfigBar({
       .then((text) => {
         handleSolutionChange(new File([text], `demo_${mapName}.txt`));
       });
-    blurActiveElement();
   };
+
+  useEffect(() => {
+    if (mapFile === null) {
+      onGraphChange(null);
+      return;
+    }
+    mapFile.text().then((text) => {
+      try {
+        onGraphChange(new Graph(text));
+        setMapError(null);
+      } catch (e) {
+        setMapFile(null);
+        onGraphChange(null);
+        setMapError(e instanceof Error ? e.message : "An unexpected error occurred");
+      }
+    });
+  }, [mapFile, onGraphChange]);
+
+  useEffect(() => {
+    if (solutionFile === null) {
+      onSolutionChange(null);
+      return
+    }
+    solutionFile.text().then((text) => {
+      try {
+        if (graph === null) throw new Error("Map must be loaded before solution");
+        const soln = parseSolution(text);
+        soln.forEach((config) => {
+          config.forEach((pose) => {
+            if (pose.position.x > graph.width || pose.position.y > graph.height) {
+              throw new Error(`Invalid solution: position ${pose.position} is out of bounds`);
+            }
+          });
+        });
+        onSolutionChange(soln);
+        setSolutionError(null);
+      } catch (e) {
+        setSolutionFile(null);
+        setSolutionError(e instanceof Error ? e.message : "An unexpected error occurred");
+      }
+    });
+  }, [graph, solutionFile, onSolutionChange]);
 
   const handleMapChange = (newValue: File | null) => {
     setMapFile(newValue);
-    if (newValue) {
-      newValue.text().then((text) => {
-        try {
-          onGraphChange(new Graph(text));
-          setMapError(null);
-        } catch (e) {
-          setMapError(e instanceof Error ? e.message : "An unexpected error occurred");
-        }
-        blurActiveElement();
-      });
-    }
-  }
+    setSolutionFile(null);
+    blurActiveElement();
+  };
 
   const handleSolutionChange = (newValue: File | null) => {
     setSolutionFile(newValue);
-    if (newValue) {
-      newValue.text().then((text) => {
-        try {
-          onSolutionChange(parseSolution(text));
-          setSolutionError(null);
-        } catch (e) {
-          setSolutionError(e instanceof Error ? e.message : "An unexpected error occurred");
-        }
-        blurActiveElement();
-      });
-    }
-  }
+    blurActiveElement();
+  };
 
   return (
     <Stack direction="column" spacing={2} sx={{padding: 2}} >
@@ -113,6 +138,10 @@ function ConfigBar({
             onChange={handleMapChange} 
             placeholder="Select a map file"
             sx={{width: '100%'}}
+            clearIconButtonProps={{
+              title: "Clear",
+              children: <ClearIcon fontSize="small" />
+            }}
         />
         {mapError && <p style={{color: 'red'}}>{mapError}</p>}
       </Stack>
@@ -124,6 +153,10 @@ function ConfigBar({
               onChange={handleSolutionChange} 
               placeholder="Select a solution file"
               sx={{width: '100%'}}
+              clearIconButtonProps={{
+                title: "Clear",
+                children: <ClearIcon fontSize="small" />
+              }}
           />
           {solutionError && <p style={{color: 'red'}}>{solutionError}</p>}
       </Stack>

@@ -54,7 +54,9 @@ export function parseSolution(text: string): Solution {
             if (m === null) break;
             if (m === null || m.length !== 5) throw new Error("Invalid solution");
             const x = Number(m[2]);
+            if (x < 0) throw new Error(`Invalid solution: position ${x} is negative`);
             const y = Number(m[3]);
+            if (y < 0) throw new Error(`Invalid solution: position ${y} is negative`);
             const o = orientationFromString(m[4]);
             const pose = new Pose(new Coordinate(x, y), o);
             config.push(pose);
