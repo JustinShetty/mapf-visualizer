@@ -229,7 +229,7 @@ const PixiApp = forwardRef(({
         const orientationAware: boolean = solution[0][0].orientation !== Orientation.NONE;
 
         // Create paths for each agent in the first configuration
-        // Need to do this so the paths are rendered below the agents
+        // Need to do this first so paths are rendered below agents
         solution[0].forEach(() => {
             agentPathsRef.current.push(viewport.addChild(new PIXI.Container()));
         });
