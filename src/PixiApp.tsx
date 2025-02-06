@@ -87,6 +87,20 @@ const PixiApp = forwardRef(({
         timestepRef.current = 0.0;
     }
 
+    function takeScreenshot() {
+        if (app && viewport && grid) {
+            app.stop();
+            app.renderer.extract.base64(viewport).then((data) => {
+                const link = document.createElement('a');
+                link.download = 'screenshot.png';
+                link.href = data;
+                link.click();
+                link.remove();
+                app.start();
+            });
+        }
+    }
+
     useImperativeHandle(ref, () => ({
         skipBackward: () => {
             timestepRef.current = Math.max(0, timestepRef.current - stepSize());
@@ -102,6 +116,9 @@ const PixiApp = forwardRef(({
         fit: () => {
             fit();
         },
+        takeScreenshot: () => {
+            takeScreenshot();
+        }
     }));
 
     // Fit the viewport to the grid

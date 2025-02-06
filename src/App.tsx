@@ -13,6 +13,7 @@ function App() {
     skipForward?: () => void; 
     restart?: () => void; 
     fit?: () => void;
+    takeScreenshot?: () => void;
   }>(null);
 
   const [graph, setGraph] = React.useState<Graph | null>(null);
@@ -47,6 +48,12 @@ function App() {
     }
   }
 
+  const handleTakeScreenshot = () => {
+    if (pixiAppRef.current?.takeScreenshot) {
+      pixiAppRef.current.takeScreenshot();
+    }
+  }
+
   return (
     <StrictMode>
     <Box sx={{ flexGrow: 1 }}>
@@ -64,6 +71,9 @@ function App() {
           />
         </Grid>
         <Grid size={4}>
+          <div onClick={handleTakeScreenshot}>
+            Click to take screenshot
+          </div>
           <ConfigBar
             graph={graph}
             onGraphChange={useCallback((graph: Graph | null) => setGraph(graph), [])}
