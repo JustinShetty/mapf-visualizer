@@ -5,6 +5,8 @@ import { Divider, Stack, Button } from '@mui/material';
 import { MuiFileInput } from "mui-file-input";
 import React, { useEffect } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import Tooltip from '@mui/material/Tooltip';
 
 interface ConfigBarProps {
   graph: Graph | null;
@@ -124,6 +126,17 @@ function ConfigBar({
     blurActiveElement();
   };
 
+  const downloadFile = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <Stack direction="column" spacing={2} sx={{padding: 2}} >
       <Stack direction="column" spacing={1}>
@@ -133,31 +146,45 @@ function ConfigBar({
       <Divider />
       <Stack direction="column" spacing={1}>
         <h1>Map</h1>
-        <MuiFileInput 
-            value={mapFile} 
-            onChange={handleMapChange} 
-            placeholder="Select a map file"
-            sx={{width: '100%'}}
-            clearIconButtonProps={{
-              title: "Clear",
-              children: <ClearIcon fontSize="small" />
-            }}
-        />
-        {mapError && <p style={{color: 'red'}}>{mapError}</p>}
-      </Stack>
-      <Divider />
-      <Stack direction="column" spacing={2}>
-          <h1>Solution</h1>
-          <MuiFileInput 
-              value={solutionFile} 
-              onChange={handleSolutionChange} 
-              placeholder="Select a solution file"
+        <Stack direction="row" spacing={1}>
+          <MuiFileInput
+              value={mapFile}
+              onChange={handleMapChange}
+              placeholder="Select a map file"
               sx={{width: '100%'}}
               clearIconButtonProps={{
                 title: "Clear",
                 children: <ClearIcon fontSize="small" />
               }}
           />
+          <Tooltip title={`Download ${mapFile?.name}`}>
+            <Button disabled={mapFile === null} onClick={() => {downloadFile(mapFile as File)}}>
+              <FileDownloadOutlinedIcon />
+            </Button>
+          </Tooltip>
+        </Stack>
+        {mapError && <p style={{color: 'red'}}>{mapError}</p>}
+      </Stack>
+      <Divider />
+      <Stack direction="column" spacing={2}>
+          <h1>Solution</h1>
+          <Stack direction="row" spacing={1}>
+            <MuiFileInput
+                value={solutionFile}
+                onChange={handleSolutionChange}
+                placeholder="Select a solution file"
+                sx={{width: '100%'}}
+                clearIconButtonProps={{
+                  title: "Clear",
+                  children: <ClearIcon fontSize="small" />
+                }}
+            />
+            <Tooltip title={`Download ${solutionFile?.name}`}>
+              <Button disabled={solutionFile === null} onClick={() => {downloadFile(solutionFile as File)}}>
+                <FileDownloadOutlinedIcon />
+              </Button>
+            </Tooltip>
+          </Stack>
           {solutionError && <p style={{color: 'red'}}>{solutionError}</p>}
       </Stack>
       <Divider />
