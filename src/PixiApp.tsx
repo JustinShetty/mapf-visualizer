@@ -7,7 +7,7 @@ import { Coordinate } from './Graph';
 import { BACKGROUND_COLOR, GRID_COLOR, TEXT_COLOR, AGENT_COLORS } from './Params';
 
 const GRID_UNIT_TO_PX: number = 100;
-const FONT_SUPER_RESOLUTION_SCALE = 2;
+const FONT_SUPER_RESOLUTION_SCALE = 3;
 
 interface PixiAppProps {
     width: number;
@@ -434,7 +434,7 @@ const PixiApp = forwardRef(({
         if (!grid) return;
         grid.children.forEach((cellContainer) => {
             const idText = cellContainer.children[1];
-            if (idText !== undefined) {
+            if (idText) {
                 idText.visible = showCellId;
             }
         });
