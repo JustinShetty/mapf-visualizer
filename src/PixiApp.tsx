@@ -24,42 +24,6 @@ interface PixiAppProps {
     showGoals: boolean,
 }
 
-function drawGrid(viewport: Viewport, graph: Graph, showCellId: boolean) : PIXI.Container {
-    const grid = viewport.addChild(new PIXI.Container());
-
-    for (let x: number = 0; x < graph.width; x++) {
-        for (let y: number = 0; y < graph.height; y++) {
-            const cellContainer = grid.addChild(new PIXI.Container());
-            const cellGraphic = cellContainer.addChild(new PIXI.Graphics());
-            const cellX = x * GRID_UNIT_TO_PX;
-            const cellY = y * GRID_UNIT_TO_PX;
-            const strokeWidth = GRID_UNIT_TO_PX / 10;
-            cellGraphic.rect(cellX, cellY, GRID_UNIT_TO_PX, GRID_UNIT_TO_PX)
-            .stroke({color: GRID_COLOR, width: strokeWidth});
-            if (graph.obstacles.has(new Coordinate(x, y).toString())) {
-                cellGraphic.fill({color: GRID_COLOR});
-            }
-            const idText = cellContainer.addChild(new PIXI.Text({
-                text: `${x + y * graph.width}`,
-                style: {
-                    fontFamily: 'Arial',
-                    fontSize: cellGraphic.width / 6,
-                    fill: TEXT_COLOR,
-                }
-            }));
-            idText.style.fontSize *= FONT_SUPER_RESOLUTION_SCALE;
-            idText.scale.set(1 / FONT_SUPER_RESOLUTION_SCALE, 1 / FONT_SUPER_RESOLUTION_SCALE);
-            idText.x = cellX + strokeWidth;
-            idText.y = cellY + strokeWidth;
-            idText.visible = showCellId;
-        }
-    }
-
-    viewport.worldHeight = grid.height * 1.1;
-    viewport.worldWidth = grid.width * 1.1;
-    return grid;
-}
-
 const PixiApp = forwardRef(({ 
     width, 
     height, 
@@ -98,6 +62,7 @@ const PixiApp = forwardRef(({
         partial: new PIXI.Container()
     });  // same order as agentsRef
     const tracePathsRef = useRef(tracePaths);
+    const goalMarkersRef = useRef<PIXI.Container>(new PIXI.Container());
 
     // Scale a position from grid units to pixels
     const scalePosition = (position: number) : number => {
@@ -110,14 +75,12 @@ const PixiApp = forwardRef(({
 
     function takeScreenshot() {
         if (app && viewport && grid) {
-            app.stop();
             app.renderer.extract.base64(viewport).then((data) => {
                 const link = document.createElement('a');
                 link.download = 'screenshot.png';
                 link.href = data;
                 link.click();
                 link.remove();
-                app.start();
             });
         }
     }
@@ -268,6 +231,7 @@ const PixiApp = forwardRef(({
                 agentPathsRef.current.partial.removeChildren();
             }
             if (timestepTextRef.current) timestepTextRef.current.text = "";
+            if (goalMarkersRef.current) goalMarkersRef.current.removeChildren();
         }
         if (solution === null) return;
         resetTimestep();
@@ -275,8 +239,20 @@ const PixiApp = forwardRef(({
         // Check if the solution is orientation-aware
         const orientationAware: boolean = solution[0][0].orientation !== Orientation.NONE;
 
-        // Create paths for each agent in the first configuration
-        // Need to do this first so paths are rendered below agents
+        // Goal markers
+        const goalMarkers = viewport.addChild(goalMarkersRef.current);
+        goalMarkers.visible = showGoals;
+        solution[solution.length - 1].forEach((pose, agentId) => {
+            const marker = goalMarkers.addChild(new PIXI.Graphics());
+            const width = GRID_UNIT_TO_PX / 4;
+            marker.rect(
+                scalePosition(pose.position.x) - width / 2,
+                scalePosition(pose.position.y) - width / 2,
+                width, width)
+            .fill(AGENT_COLORS[agentId % AGENT_COLORS.length]);
+        });
+
+        // Paths
         viewport.addChild(agentPathsRef.current.full);
         viewport.addChild(agentPathsRef.current.partial);
         solution[0].forEach(() => {
@@ -284,7 +260,7 @@ const PixiApp = forwardRef(({
             agentPathsRef.current.partial.addChild(new PIXI.Container());
         });
 
-        // Create agents based on the first configuration
+        // Agents
         const agents = viewport.addChild(new PIXI.Container());
         agentsRef.current = agents;
         solution[0].forEach((_pose, agentId) => {
@@ -336,7 +312,7 @@ const PixiApp = forwardRef(({
         }
         app.ticker.add(animate);
         tickerCallbackRef.current = animate;
-    }, [app, viewport, solution, moveAndRotateSprites, updatePaths]);
+    }, [app, viewport, solution, moveAndRotateSprites, updatePaths, showGoals]);
 
     // Initialize the app and viewport when the canvas is ready
     useEffect(() => {
@@ -391,6 +367,43 @@ const PixiApp = forwardRef(({
         return () => {app?.stop()};
     }, [app, viewport, height, width]);
 
+    const drawGrid = useCallback(() => {
+        if (viewport === null || graph === null) return null;
+        const grid = viewport.addChild(new PIXI.Container());
+    
+        for (let x: number = 0; x < graph.width; x++) {
+            for (let y: number = 0; y < graph.height; y++) {
+                const cellContainer = grid.addChild(new PIXI.Container());
+                const cellGraphic = cellContainer.addChild(new PIXI.Graphics());
+                const cellX = x * GRID_UNIT_TO_PX;
+                const cellY = y * GRID_UNIT_TO_PX;
+                const strokeWidth = GRID_UNIT_TO_PX / 10;
+                cellGraphic.rect(cellX, cellY, GRID_UNIT_TO_PX, GRID_UNIT_TO_PX)
+                .stroke({color: GRID_COLOR, width: strokeWidth});
+                if (graph.obstacles.has(new Coordinate(x, y).toString())) {
+                    cellGraphic.fill({color: GRID_COLOR});
+                }
+                const idText = cellContainer.addChild(new PIXI.Text({
+                    text: `${x + y * graph.width}`,
+                    style: {
+                        fontFamily: 'Arial',
+                        fontSize: cellGraphic.width / 6,
+                        fill: TEXT_COLOR,
+                    }
+                }));
+                idText.style.fontSize *= FONT_SUPER_RESOLUTION_SCALE;
+                idText.scale.set(1 / FONT_SUPER_RESOLUTION_SCALE, 1 / FONT_SUPER_RESOLUTION_SCALE);
+                idText.x = cellX + strokeWidth;
+                idText.y = cellY + strokeWidth;
+                idText.visible = showCellId;
+            }
+        }
+    
+        viewport.worldHeight = grid.height * 1.1;
+        viewport.worldWidth = grid.width * 1.1;
+        return grid;
+    }, [viewport, graph, showCellId]);
+
     // Resize the viewport when the width or height changes
     useEffect(() => {
         if (app !== null && viewport !== null) {
@@ -404,7 +417,7 @@ const PixiApp = forwardRef(({
     useEffect(() => {
         if (app && viewport) {
             if (grid) viewport.removeChild(grid);
-            if (graph) setGrid(drawGrid(viewport, graph, showCellId));
+            if (graph) setGrid(drawGrid());
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [app, graph, viewport]); // Excluding 'grid' to prevent infinite loop
@@ -443,12 +456,8 @@ const PixiApp = forwardRef(({
     }, [showCellId, grid]);
 
     useEffect(() => {
-        if (!grid) return;
-        // grid.children.forEach((cellContainer) => {
-        //     const cellGraphic = cellContainer.children[0];
-        //     cellGraphic.visible = showGoals;
-        // });
-    }, [showGoals, grid]);
+        if (goalMarkersRef.current) goalMarkersRef.current.visible = showGoals;
+    }, [showGoals]);
 
     return <canvas ref={canvasRef} />
 });
