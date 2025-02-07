@@ -14,7 +14,7 @@ interface PixiAppProps {
     graph: Graph | null;
     solution: Solution | null;
     playAnimation: boolean;
-    speed: number;
+    stepSize: number;
     loopAnimation: boolean;
     showAgentId: boolean;
     tracePaths: boolean;
@@ -46,7 +46,7 @@ const PixiApp = forwardRef(({
     graph, 
     solution, 
     playAnimation,
-    speed,
+    stepSize,
     loopAnimation,
     showAgentId,
     tracePaths,
@@ -64,7 +64,7 @@ const PixiApp = forwardRef(({
     const [grid, setGrid] = useState<PIXI.Container | null>(null);
     const playAnimationRef = useRef(playAnimation);
     const timestepRef = useRef(0.0); 
-    const speedRef = useRef(1.0);
+    const stepSizeRef = useRef(1.0);
     const loopAnimationRef = useRef(loopAnimation);
     const hudRef = useRef<PIXI.Container | null>(null);
     const timestepTextRef = useRef<PIXI.Text | null>(null);
@@ -77,12 +77,6 @@ const PixiApp = forwardRef(({
     // Scale a position from grid units to pixels
     const scalePosition = (position: number) : number => {
         return position * GRID_UNIT_TO_PX + GRID_UNIT_TO_PX / 2;
-    }
-
-    function stepSize(): number {
-        // ticker is called at ~60 Hz
-        const totalFramesPerStep = 60 / speedRef.current;
-        return 1 / totalFramesPerStep;
     }
 
     function resetTimestep() {
@@ -105,11 +99,11 @@ const PixiApp = forwardRef(({
 
     useImperativeHandle(ref, () => ({
         skipBackward: () => {
-            timestepRef.current = Math.max(0, timestepRef.current - stepSize());
+            timestepRef.current = Math.max(0, timestepRef.current - stepSizeRef.current);
         },
         skipForward: () => {
             if (solution) {
-                timestepRef.current = Math.min(timestepRef.current + stepSize(), solution.length - 1);
+                timestepRef.current = Math.min(timestepRef.current + stepSizeRef.current, solution.length - 1);
             }
         },
         restart: () => {
@@ -301,7 +295,8 @@ const PixiApp = forwardRef(({
 
             if (playAnimationRef.current === true) {
                 if (timestepRef.current < solution.length - 1) {
-                    timestepRef.current += stepSize();
+                    const approximateFramerate = 60;
+                    timestepRef.current += stepSizeRef.current / approximateFramerate;
                 } else if (loopAnimationRef.current) {
                     resetTimestep();
                 }
@@ -395,9 +390,9 @@ const PixiApp = forwardRef(({
     // Update the playAnimationRef when the playAnimation changes
     useEffect(() => {
         playAnimationRef.current = playAnimation;
-        speedRef.current = speed;
+        stepSizeRef.current = stepSize;
         loopAnimationRef.current = loopAnimation
-    }, [playAnimation, speed, loopAnimation]);
+    }, [playAnimation, stepSize, loopAnimation]);
 
     // Update the showAgentIdRef when the showAgentId changes
     useEffect(() => {

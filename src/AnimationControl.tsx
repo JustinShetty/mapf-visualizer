@@ -20,9 +20,9 @@ import FilterCenterFocusOutlinedIcon from '@mui/icons-material/FilterCenterFocus
 import ScreenshotMonitorOutlinedIcon from '@mui/icons-material/ScreenshotMonitorOutlined';
 import StartIcon from '@mui/icons-material/Start';
 
-const SPEED_STEP = 0.2;
-const SPEED_MAX = 10;
-const SPEED_MIN = 0.2;
+const STEP_SIZE_INCREMENT = 0.2;
+const STEP_SIZE_MAX = 10;
+const STEP_SIZE_MIN = 0.2;
 
 const STEP_BACKWARD_KEY = 'ArrowLeft';
 const PLAY_PAUSE_KEY = ' ';
@@ -31,8 +31,8 @@ const RESTART_KEY = 'r';
 const LOOP_KEY = 'l';
 const FIT_VIEW_KEY = 'f';
 const SHOW_AGENT_ID_KEY = 'a';
-const SPEED_UP_KEY = 'ArrowUp';
-const SPEED_DOWN_KEY = 'ArrowDown';
+const STEP_SIZE_UP_KEY = 'ArrowUp';
+const STEP_SIZE_DOWN_KEY = 'ArrowDown';
 const TRACE_PATHS_KEY = 't';
 const SCREENSHOT_KEY = 's';
 
@@ -42,8 +42,8 @@ interface AnimationControlProps {
     onSkipBackward: () => void;
     onSkipForward: () => void;
     onRestart: () => void;
-    speed: number;
-    onSpeedChange: (speed: number) => void;
+    stepSize: number;
+    onStepSizeChange: (speed: number) => void;
     loopAnimation: boolean,
     onLoopAnimationChange: (loopAnimation: boolean) => void;
     onFitView: () => void;
@@ -61,8 +61,8 @@ function AnimationControl({
     onSkipBackward, 
     onSkipForward,
     onRestart,
-    speed,
-    onSpeedChange,
+    stepSize,
+    onStepSizeChange,
     loopAnimation,
     onLoopAnimationChange,
     onFitView,
@@ -76,7 +76,7 @@ function AnimationControl({
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
         if (typeof value === 'number') {
-            onSpeedChange(value);
+            onStepSizeChange(value);
         }
     };
 
@@ -100,10 +100,10 @@ function AnimationControl({
                 onFitView();
             } else if (event.key === SHOW_AGENT_ID_KEY) {
                 onShowAgentIdChange(!showAgentId);
-            } else if (event.key === SPEED_UP_KEY && speed + SPEED_STEP <= SPEED_MAX) {
-                onSpeedChange(speed + SPEED_STEP);
-            } else if (event.key === SPEED_DOWN_KEY && speed - SPEED_STEP >= SPEED_MIN) {
-                onSpeedChange(speed - SPEED_STEP);
+            } else if (event.key === STEP_SIZE_UP_KEY && stepSize + STEP_SIZE_INCREMENT <= STEP_SIZE_MAX) {
+                onStepSizeChange(stepSize + STEP_SIZE_INCREMENT);
+            } else if (event.key === STEP_SIZE_DOWN_KEY && stepSize - STEP_SIZE_INCREMENT >= STEP_SIZE_MIN) {
+                onStepSizeChange(stepSize - STEP_SIZE_INCREMENT);
             } else if (event.key === TRACE_PATHS_KEY) {
                 onTracePathsChange(!tracePaths);
             } else if (event.key === SCREENSHOT_KEY) {
@@ -116,7 +116,7 @@ function AnimationControl({
         };
     }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, 
         onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, 
-        onSkipForward, onSpeedChange, showAgentId, speed, onTracePathsChange, tracePaths, 
+        onSkipForward, onStepSizeChange, showAgentId, stepSize, onTracePathsChange, tracePaths, 
         takeScreenshot]);
 
     return (
@@ -193,23 +193,23 @@ function AnimationControl({
                     title={
                         <div style={{ textAlign: 'center' }}>
                             Adjust animation step size
-                            ({SPEED_UP_KEY}/{SPEED_DOWN_KEY})
+                            ({STEP_SIZE_UP_KEY}/{STEP_SIZE_DOWN_KEY})
                         </div>
                     }
                 >
                     <Slider
-                        value={speed}
-                        step={SPEED_STEP}
+                        value={stepSize}
+                        step={STEP_SIZE_INCREMENT}
                         marks
-                        min={SPEED_MIN}
-                        max={SPEED_MAX}
+                        min={STEP_SIZE_MIN}
+                        max={STEP_SIZE_MAX}
                         valueLabelDisplay="auto"
                         onChange={handleSliderChange}
                         sx={{ width: '50%', height: "auto"}}
                     />
                 </Tooltip>
                 <Tooltip title="Reset speed">
-                    <Button onClick={() => onSpeedChange(1)}>
+                    <Button onClick={() => onStepSizeChange(1)}>
                         <RestartAltIcon />
                     </Button>
                 </Tooltip>

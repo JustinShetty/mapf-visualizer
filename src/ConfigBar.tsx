@@ -17,8 +17,8 @@ interface ConfigBarProps {
   onSkipBackward: () => void;
   onSkipForward: () => void;
   onRestart: () => void;
-  speed: number;
-  onSpeedChange: (speed: number) => void;
+  stepSize: number;
+  onStepSizeChange: (speed: number) => void;
   loopAnimation: boolean,
   onLoopAnimationChange: (loopAnimation: boolean) => void;
   onFitView: () => void;
@@ -39,8 +39,8 @@ function ConfigBar({
   onSkipBackward,
   onSkipForward,
   onRestart,
-  speed,
-  onSpeedChange,
+  stepSize,
+  onStepSizeChange,
   loopAnimation,
   onLoopAnimationChange,
   onFitView,
@@ -202,8 +202,8 @@ function ConfigBar({
         onSkipBackward={onSkipBackward}
         onSkipForward={onSkipForward}
         onRestart={onRestart}
-        speed={speed}
-        onSpeedChange={onSpeedChange}
+        stepSize={stepSize}
+        onStepSizeChange={onStepSizeChange}
         loopAnimation={loopAnimation}
         onLoopAnimationChange={onLoopAnimationChange}
         onFitView={onFitView}

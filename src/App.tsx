@@ -19,7 +19,7 @@ function App() {
   const [graph, setGraph] = React.useState<Graph | null>(null);
   const [solution, setSolution] = React.useState<Solution | null>(null);
   const [playAnimation, setPlayAnimation] = React.useState<boolean>(true);
-  const [speed, setSpeed] = React.useState<number>(1.0);
+  const [stepSize, setStepSize] = React.useState<number>(1.0);
   const [loopAnimation, setLoopAnimation] = React.useState<boolean>(true);
   const [showAgentId, setShowAgentId] = React.useState<boolean>(false);
   const [tracePaths, setTracePaths] = React.useState<boolean>(true);
@@ -65,7 +65,7 @@ function App() {
             graph={graph} 
             solution={solution} 
             playAnimation={playAnimation}
-            speed={speed}
+            stepSize={stepSize}
             loopAnimation={loopAnimation}
             showAgentId={showAgentId}
             tracePaths={tracePaths}
@@ -82,8 +82,8 @@ function App() {
             onSkipBackward={handleSkipBackward}
             onSkipForward={handleSkipForward}
             onRestart={handleRestart}
-            speed={speed}
-            onSpeedChange={(speed: number) => setSpeed(speed)}
+            stepSize={stepSize}
+            onStepSizeChange={setStepSize}
             loopAnimation={loopAnimation}
             onLoopAnimationChange={(loopAnimation: boolean) => setLoopAnimation(loopAnimation)}
             onFitView={handleFitView}

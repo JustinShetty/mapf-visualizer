@@ -9,7 +9,7 @@ interface VisualizerProps {
   solution: Solution | null;
   playAnimation: boolean;
   pixiAppRef: React.MutableRefObject<{ skipBackward?: () => void; skipForward?: () => void; restart?: () => void; } | null>;
-  speed: number;
+  stepSize: number;
   loopAnimation: boolean;
   showAgentId: boolean;
   tracePaths: boolean;
@@ -21,7 +21,7 @@ function Visualizer({
   solution, 
   playAnimation, 
   pixiAppRef,
-  speed,
+  stepSize,
   loopAnimation,
   showAgentId,
   tracePaths,
@@ -56,7 +56,7 @@ function Visualizer({
           graph={graph}
           solution={solution}
           playAnimation={playAnimation}
-          speed={speed}
+          stepSize={stepSize}
           loopAnimation={loopAnimation}
           showAgentId={showAgentId}
           tracePaths={tracePaths}
