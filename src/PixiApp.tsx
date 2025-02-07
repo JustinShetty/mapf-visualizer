@@ -420,14 +420,13 @@ const PixiApp = forwardRef(({
                 idText.scale.set(1 / FONT_SUPER_RESOLUTION_SCALE, 1 / FONT_SUPER_RESOLUTION_SCALE);
                 idText.x = cellX + strokeWidth;
                 idText.y = cellY + strokeWidth;
-                idText.visible = showCellId;
             }
         }
     
         viewport.worldHeight = grid.height * 1.1;
         viewport.worldWidth = grid.width * 1.1;
         return grid;
-    }, [viewport, graph, showCellId]);
+    }, [viewport, graph]);
 
     // Resize the viewport when the width or height changes
     useEffect(() => {
@@ -458,20 +457,9 @@ const PixiApp = forwardRef(({
     useEffect(() => {
         playAnimationRef.current = playAnimation;
         stepSizeRef.current = stepSize;
-        loopAnimationRef.current = loopAnimation
-    }, [playAnimation, stepSize, loopAnimation]);
-
-    // Update the showAgentIdRef when the showAgentId changes
-    useEffect(() => {
+        loopAnimationRef.current = loopAnimation;
         showAgentIdRef.current = showAgentId;
-    }, [showAgentId]);
-
-    useEffect(() => {
-        if (agentPathsRef.current) {
-            agentPathsRef.current.full.visible = tracePaths;
-            agentPathsRef.current.partial.visible = tracePaths;
-        }
-    }, [tracePaths]);
+    }, [playAnimation, stepSize, loopAnimation, showAgentId]);
 
     useEffect(() => {
         if (!grid) return;
@@ -484,12 +472,13 @@ const PixiApp = forwardRef(({
     }, [showCellId, grid]);
 
     useEffect(() => {
+        if (agentPathsRef.current) {
+            agentPathsRef.current.full.visible = tracePaths;
+            agentPathsRef.current.partial.visible = tracePaths;
+        }
         if (goalMarkersRef.current) goalMarkersRef.current.visible = showGoals;
-    }, [showGoals]);
-
-    useEffect(() => {
         if (goalVectorsRef.current) goalVectorsRef.current.visible = showGoalVectors;
-    }, [showGoalVectors]);
+    }, [tracePaths, showGoals, showGoalVectors]);
 
     return <canvas ref={canvasRef} />
 });
