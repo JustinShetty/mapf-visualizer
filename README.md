@@ -8,6 +8,9 @@ This repository hosts the web-based version of the MAPF (Multi-Agent Pathfinding
 - **Customizable Input**: Upload your own MAPF maps and solutions.
 - **Real-Time Visualization**: Observe agent movements step-by-step.
 
+## Demo
+![demo](./assets/demo.gif)
+
 ## Usage
 
 1. **Upload a Map File**: Load your MAPF map file (.txt format).
