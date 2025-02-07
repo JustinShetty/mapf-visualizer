@@ -374,7 +374,7 @@ const PixiApp = forwardRef(({
                     const textStyle = new PIXI.TextStyle({
                         fontSize: 24,
                         fill: TEXT_COLOR,
-                        fontFamily: "Courier New",
+                        fontFamily: "Arial",
                         fontWeight: "bold",
                         stroke: {
                             color: BACKGROUND_COLOR, 
@@ -384,7 +384,7 @@ const PixiApp = forwardRef(({
                     timestepTextRef.current = hudRef.current.addChild(
                         new PIXI.Text({style: textStyle})
                     );
-                    timestepTextRef.current.position.set(10, 10);
+                    timestepTextRef.current.position.set(width / 100, height / 100);
                 }
                 app.start();
             }
