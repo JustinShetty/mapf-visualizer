@@ -161,17 +161,13 @@ function ConfigBar({
                 children: <ClearIcon fontSize="small" />
               }}
           />
-          <Tooltip title={mapFile ? `Download ${mapFile?.name}` : ""}>
-            <span>
-              <Button 
-                disabled={mapFile === null} 
-                onClick={() => {downloadFile(mapFile as File)}}
-                sx={{height: '100%'}}
-              >
+          {mapFile &&
+            <Tooltip title={`Download ${mapFile?.name}`}>
+              <Button onClick={() => {downloadFile(mapFile as File)}}>
                 <FileDownloadOutlinedIcon />
               </Button>
-            </span>
-          </Tooltip>
+            </Tooltip>
+          }
         </Stack>
         {mapError && <p style={{color: 'red'}}>{mapError}</p>}
       </Stack>
@@ -189,17 +185,13 @@ function ConfigBar({
                   children: <ClearIcon fontSize="small" />
                 }}
             />
-            <Tooltip title={solutionFile ? `Download ${solutionFile?.name}` : ""}>
-              <div>
-                <Button 
-                  disabled={solutionFile === null} 
-                  onClick={() => {downloadFile(solutionFile as File)}}
-                  sx={{height: '100%'}}
-                >
+            {solutionFile &&
+              <Tooltip title={`Download ${solutionFile?.name}`}>
+                <Button onClick={() => {downloadFile(solutionFile as File)}}>
                   <FileDownloadOutlinedIcon />
                 </Button>
-              </div>
-            </Tooltip>
+              </Tooltip>
+            }
           </Stack>
           {solutionError && <p style={{color: 'red'}}>{solutionError}</p>}
       </Stack>
