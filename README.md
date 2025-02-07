@@ -13,7 +13,9 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 - [x] Agent coloring
 - [x] Per-agent path drawing
 - [x] Keybindings for animation control
-- [ ] Built-in screenshot capture with keybind
+- [x] Built-in screenshot capture with keybind
+- [ ] Show goal location
+- [ ] Render line between agent current location and goal
 
 ## Features
 

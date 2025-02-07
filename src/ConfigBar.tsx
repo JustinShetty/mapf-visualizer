@@ -28,6 +28,8 @@ interface ConfigBarProps {
   onTracePathsChange: (tracePaths: boolean) => void;
   canScreenshot: boolean;
   takeScreenshot: () => void;
+  showCellId: boolean;
+  setShowCellId: (showCellId: boolean) => void;
 }
 
 function ConfigBar({
@@ -50,6 +52,8 @@ function ConfigBar({
   onTracePathsChange,
   canScreenshot,
   takeScreenshot,
+  showCellId,
+  setShowCellId,
 }: ConfigBarProps) {
   const repoName = "JustinShetty/mapf-visualizer";
   const [mapFile, setMapFile] = React.useState<File | null>(null);
@@ -213,6 +217,8 @@ function ConfigBar({
         onTracePathsChange={onTracePathsChange}
         canScreenshot={canScreenshot}
         takeScreenshot={takeScreenshot}
+        showCellId={showCellId}
+        setShowCellId={setShowCellId}
       />
       <Divider />
       <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white', width: 'fit-content' }}>

@@ -7,6 +7,7 @@ import { Coordinate } from './Graph';
 import { BACKGROUND_COLOR, GRID_COLOR, TEXT_COLOR, AGENT_COLORS } from './Params';
 
 const GRID_UNIT_TO_PX: number = 100;
+const FONT_SUPER_RESOLUTION_SCALE = 2;
 
 interface PixiAppProps {
     width: number;
@@ -19,19 +20,37 @@ interface PixiAppProps {
     showAgentId: boolean;
     tracePaths: boolean;
     setCanScreenshot: (canScreenshot: boolean) => void;
+    showCellId: boolean,
 }
 
-function drawGrid(viewport: Viewport, graph: Graph) : PIXI.Container {
+function drawGrid(viewport: Viewport, graph: Graph, showCellId: boolean) : PIXI.Container {
     const grid = viewport.addChild(new PIXI.Container());
 
     for (let x: number = 0; x < graph.width; x++) {
         for (let y: number = 0; y < graph.height; y++) {
-            const cell = grid.addChild(new PIXI.Graphics());
-            cell.rect(x*GRID_UNIT_TO_PX, y*GRID_UNIT_TO_PX, GRID_UNIT_TO_PX, GRID_UNIT_TO_PX)
-            .stroke({color: GRID_COLOR, width: 10});
+            const cellContainer = grid.addChild(new PIXI.Container());
+            const cellGraphic = cellContainer.addChild(new PIXI.Graphics());
+            const cellX = x * GRID_UNIT_TO_PX;
+            const cellY = y * GRID_UNIT_TO_PX;
+            const strokeWidth = GRID_UNIT_TO_PX / 10;
+            cellGraphic.rect(cellX, cellY, GRID_UNIT_TO_PX, GRID_UNIT_TO_PX)
+            .stroke({color: GRID_COLOR, width: strokeWidth});
             if (graph.obstacles.has(new Coordinate(x, y).toString())) {
-                cell.fill({color: GRID_COLOR});
+                cellGraphic.fill({color: GRID_COLOR});
             }
+            const idText = cellContainer.addChild(new PIXI.Text({
+                text: `${x + y * graph.width}`,
+                style: {
+                    fontFamily: 'Arial',
+                    fontSize: cellGraphic.width / 6,
+                    fill: TEXT_COLOR,
+                }
+            }));
+            idText.style.fontSize *= FONT_SUPER_RESOLUTION_SCALE;
+            idText.scale.set(1 / FONT_SUPER_RESOLUTION_SCALE, 1 / FONT_SUPER_RESOLUTION_SCALE);
+            idText.x = cellX + strokeWidth;
+            idText.y = cellY + strokeWidth;
+            idText.visible = showCellId;
         }
     }
 
@@ -51,6 +70,7 @@ const PixiApp = forwardRef(({
     showAgentId,
     tracePaths,
     setCanScreenshot,
+    showCellId,
 }: PixiAppProps, ref) => {
     // this is a mess of state and refs, but how I got everything to work...
     // maybe someday I will clean this up or maybe someone who knows React better than me can help
@@ -131,7 +151,7 @@ const PixiApp = forwardRef(({
     }, [viewport, grid]);
 
     const moveAndRotateSprites = useCallback((agents: PIXI.Container[], currentTime: number) => {
-        if (solution === null) return
+        if (solution === null) return;
 
         const currentTimestep = Math.floor(currentTime);
         const interpolationProgress = currentTime - currentTimestep;
@@ -265,13 +285,12 @@ const PixiApp = forwardRef(({
         // Create agents based on the first configuration
         const agents = viewport.addChild(new PIXI.Container());
         agentsRef.current = agents;
-        let agentId = 0;
-        solution[0].forEach(() => {
+        solution[0].forEach((_pose, agentId) => {
             // build agent
             const agent = agents.addChild(new PIXI.Container());
             const circleContainer = agent.addChild(new PIXI.Container());
             const circle = circleContainer.addChild(new PIXI.Graphics());
-            const agentColor = AGENT_COLORS[agentId++ % AGENT_COLORS.length];
+            const agentColor = AGENT_COLORS[agentId % AGENT_COLORS.length];
             circle
                 .circle(0, 0, GRID_UNIT_TO_PX/3)
                 .fill(agentColor);
@@ -290,9 +309,8 @@ const PixiApp = forwardRef(({
                     fill: TEXT_COLOR,
                 }
             }));
-            const fontSuperResolutionScale = 2;
-            idText.style.fontSize *= fontSuperResolutionScale;
-            idText.scale.set(1 / fontSuperResolutionScale, 1 / fontSuperResolutionScale);
+            idText.style.fontSize *= FONT_SUPER_RESOLUTION_SCALE;
+            idText.scale.set(1 / FONT_SUPER_RESOLUTION_SCALE, 1 / FONT_SUPER_RESOLUTION_SCALE);
             idText.x = -idText.width / 2;
             idText.y = -idText.height / 2;
         });
@@ -384,7 +402,7 @@ const PixiApp = forwardRef(({
     useEffect(() => {
         if (app && viewport) {
             if (grid) viewport.removeChild(grid);
-            if (graph) setGrid(drawGrid(viewport, graph));
+            if (graph) setGrid(drawGrid(viewport, graph, showCellId));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [app, graph, viewport]); // Excluding 'grid' to prevent infinite loop
@@ -411,6 +429,16 @@ const PixiApp = forwardRef(({
     useEffect(() => {
         tracePathsRef.current = tracePaths;
     }, [tracePaths]);
+
+    useEffect(() => {
+        if (!grid) return;
+        grid.children.forEach((cellContainer) => {
+            const idText = cellContainer.children[1];
+            if (idText !== undefined) {
+                idText.visible = showCellId;
+            }
+        });
+    }, [showCellId, grid]);
 
     return <canvas ref={canvasRef} />
 });

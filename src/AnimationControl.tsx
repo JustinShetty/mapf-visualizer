@@ -19,6 +19,8 @@ import DirectionsOutlinedIcon from '@mui/icons-material/DirectionsOutlined';
 import FilterCenterFocusOutlinedIcon from '@mui/icons-material/FilterCenterFocusOutlined';
 import ScreenshotMonitorOutlinedIcon from '@mui/icons-material/ScreenshotMonitorOutlined';
 import StartIcon from '@mui/icons-material/Start';
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 
 const STEP_SIZE_INCREMENT = 0.2;
 const STEP_SIZE_MAX = 10;
@@ -33,8 +35,9 @@ const FIT_VIEW_KEY = 'f';
 const SHOW_AGENT_ID_KEY = 'a';
 const STEP_SIZE_UP_KEY = 'ArrowUp';
 const STEP_SIZE_DOWN_KEY = 'ArrowDown';
-const TRACE_PATHS_KEY = 't';
+const TRACE_PATHS_KEY = 'p';
 const SCREENSHOT_KEY = 's';
+const SHOW_CELL_ID_KEY = 'c';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -53,6 +56,8 @@ interface AnimationControlProps {
     onTracePathsChange: (tracePaths: boolean) => void;
     canScreenshot: boolean;
     takeScreenshot: () => void;
+    showCellId: boolean;
+    setShowCellId: (showCellId: boolean) => void;
 }
 
 function AnimationControl({
@@ -72,6 +77,8 @@ function AnimationControl({
     onTracePathsChange,
     canScreenshot,
     takeScreenshot,
+    showCellId,
+    setShowCellId,
 }: AnimationControlProps) {  
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
@@ -108,6 +115,8 @@ function AnimationControl({
                 onTracePathsChange(!tracePaths);
             } else if (event.key === SCREENSHOT_KEY) {
                 takeScreenshot();
+            } else if (event.key === SHOW_CELL_ID_KEY) {
+                setShowCellId(!showCellId);
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -117,10 +126,36 @@ function AnimationControl({
     }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, 
         onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, 
         onSkipForward, onStepSizeChange, showAgentId, stepSize, onTracePathsChange, tracePaths, 
-        takeScreenshot]);
+        takeScreenshot, showCellId, setShowCellId]);
 
     return (
         <Stack direction="column" spacing={2}>
+            <Stack direction="row" spacing={2} justifyContent="center">
+                <Tooltip 
+                    title={
+                        <div style={{ textAlign: 'center' }}>
+                            Adjust animation step size
+                            ({STEP_SIZE_UP_KEY}/{STEP_SIZE_DOWN_KEY})
+                        </div>
+                    }
+                >
+                    <Slider
+                        value={stepSize}
+                        step={STEP_SIZE_INCREMENT}
+                        marks
+                        min={STEP_SIZE_MIN}
+                        max={STEP_SIZE_MAX}
+                        valueLabelDisplay="auto"
+                        onChange={handleSliderChange}
+                        sx={{ width: '50%', height: "auto"}}
+                    />
+                </Tooltip>
+                <Tooltip title="Reset step size">
+                    <Button onClick={() => onStepSizeChange(1)}>
+                        <RestartAltIcon />
+                    </Button>
+                </Tooltip>
+            </Stack>
             <Box display="flex" justifyContent="center">
                 <ButtonGroup size="large" variant="outlined">
                     <Tooltip title={`Backward one step (${STEP_BACKWARD_KEY})`}>
@@ -156,18 +191,25 @@ function AnimationControl({
                             <RepeatIcon />}
                         </Button>
                     </Tooltip>
-                </ButtonGroup>
-            </Box>
-            <Box display="flex" justifyContent="center">
-                <ButtonGroup size="large" variant="outlined">
                     <Tooltip title={`Reset view (${FIT_VIEW_KEY})`}>
                         <Button onClick={onFitView}>
                             <FilterCenterFocusOutlinedIcon />
                         </Button>
                     </Tooltip>
+                </ButtonGroup>
+            </Box>
+            <Box display="flex" justifyContent="center">
+                <ButtonGroup size="large" variant="outlined">
                     <Tooltip title={(showAgentId ? "Hide agent ID" : "Show agent ID") + ` (${SHOW_AGENT_ID_KEY})`}>
                         <Button onClick={() => onShowAgentIdChange(!showAgentId)}>
                             {showAgentId ?
+                            <SmartToyIcon />:
+                            <SmartToyOutlinedIcon />}
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title={(showCellId ? "Hide cell ID" : "Show cell ID") + ` (${SHOW_CELL_ID_KEY})`}>
+                        <Button onClick={() => setShowCellId(!showCellId)}>
+                            {showCellId ?
                             <LooksOneIcon />:
                             <LooksOneOutlinedIcon />}
                         </Button>
@@ -188,32 +230,6 @@ function AnimationControl({
                     </Tooltip>
                 </ButtonGroup>
             </Box>
-            <Stack direction="row" spacing={2} justifyContent="center">
-                <Tooltip 
-                    title={
-                        <div style={{ textAlign: 'center' }}>
-                            Adjust animation step size
-                            ({STEP_SIZE_UP_KEY}/{STEP_SIZE_DOWN_KEY})
-                        </div>
-                    }
-                >
-                    <Slider
-                        value={stepSize}
-                        step={STEP_SIZE_INCREMENT}
-                        marks
-                        min={STEP_SIZE_MIN}
-                        max={STEP_SIZE_MAX}
-                        valueLabelDisplay="auto"
-                        onChange={handleSliderChange}
-                        sx={{ width: '50%', height: "auto"}}
-                    />
-                </Tooltip>
-                <Tooltip title="Reset speed">
-                    <Button onClick={() => onStepSizeChange(1)}>
-                        <RestartAltIcon />
-                    </Button>
-                </Tooltip>
-            </Stack>
         </Stack>
     );   
 }

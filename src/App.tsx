@@ -24,6 +24,7 @@ function App() {
   const [showAgentId, setShowAgentId] = React.useState<boolean>(false);
   const [tracePaths, setTracePaths] = React.useState<boolean>(true);
   const [canScreenshot, setCanScreenshot] = React.useState<boolean>(true);
+  const [showCellId, setShowCellId] = React.useState<boolean>(false);
 
   const handleSkipBackward = () => {
     if (pixiAppRef.current?.skipBackward) {
@@ -70,6 +71,7 @@ function App() {
             showAgentId={showAgentId}
             tracePaths={tracePaths}
             setCanScreenshot={setCanScreenshot}
+            showCellId={showCellId}
           />
         </Grid>
         <Grid size={4}>
@@ -93,6 +95,8 @@ function App() {
             onTracePathsChange={(tracePaths: boolean) => setTracePaths(tracePaths)}
             canScreenshot={canScreenshot}
             takeScreenshot={handleTakeScreenshot}
+            showCellId={showCellId}
+            setShowCellId={setShowCellId}
           />
         </Grid>
       </Grid>
