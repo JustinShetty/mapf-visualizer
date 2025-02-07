@@ -32,6 +32,8 @@ interface ConfigBarProps {
   setShowCellId: (showCellId: boolean) => void;
   showGoals: boolean;
   setShowGoals: (showGoals: boolean) => void;
+  showGoalVectors: boolean;
+  setShowGoalVectors: (showGoalVectors: boolean) => void;
 }
 
 function ConfigBar({
@@ -58,6 +60,8 @@ function ConfigBar({
   setShowCellId,
   showGoals,
   setShowGoals,
+  showGoalVectors,
+  setShowGoalVectors,
 }: ConfigBarProps) {
   const repoName = "JustinShetty/mapf-visualizer";
   const [mapFile, setMapFile] = React.useState<File | null>(null);
@@ -225,6 +229,8 @@ function ConfigBar({
         setShowCellId={setShowCellId}
         showGoals={showGoals}
         setShowGoals={setShowGoals}
+        showGoalVectors={showGoalVectors}
+        setShowGoalVectors={setShowGoalVectors}
       />
     <Divider />
       <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white', width: 'fit-content' }}>

@@ -22,6 +22,7 @@ interface PixiAppProps {
     setCanScreenshot: (canScreenshot: boolean) => void;
     showCellId: boolean,
     showGoals: boolean,
+    showGoalVectors: boolean,
 }
 
 const PixiApp = forwardRef(({ 
@@ -37,6 +38,7 @@ const PixiApp = forwardRef(({
     setCanScreenshot,
     showCellId,
     showGoals,
+    showGoalVectors,
 }: PixiAppProps, ref) => {
     // this is a mess of state and refs, but how I got everything to work...
     // maybe someday I will clean this up or maybe someone who knows React better than me can help
@@ -61,8 +63,8 @@ const PixiApp = forwardRef(({
         full: new PIXI.Container(),
         partial: new PIXI.Container()
     });  // same order as agentsRef
-    const tracePathsRef = useRef(tracePaths);
     const goalMarkersRef = useRef<PIXI.Container>(new PIXI.Container());
+    const goalVectorsRef = useRef<PIXI.Container>(new PIXI.Container());
 
     // Scale a position from grid units to pixels
     const scalePosition = (position: number) : number => {
@@ -116,7 +118,7 @@ const PixiApp = forwardRef(({
     }, [viewport, grid]);
 
     const moveAndRotateSprites = useCallback((agents: PIXI.Container[], currentTime: number) => {
-        if (solution === null) return;
+        if (!solution) return;
 
         const currentTimestep = Math.floor(currentTime);
         const interpolationProgress = currentTime - currentTimestep;
@@ -159,10 +161,7 @@ const PixiApp = forwardRef(({
     }, [solution]);
 
     const updatePaths = useCallback((agents: PIXI.Container[], currentTime: number) => {
-        if (solution === null) return;
-
-        agentPathsRef.current.full.visible = tracePathsRef.current;
-        agentPathsRef.current.partial.visible = tracePathsRef.current;
+        if (!solution) return;
 
         const currentTimestep = Math.floor(currentTime);
         const interpolationProgress = currentTime - currentTimestep;
@@ -220,6 +219,25 @@ const PixiApp = forwardRef(({
         });
     }, [solution]);
 
+    const updateGoalVectors = useCallback((agents: PIXI.Container[]) => {
+        if (!solution) return;
+        agents.forEach((agent, index) => {
+            const goal =  solution[solution.length - 1][index];
+            const goalVector = goalVectorsRef.current.children[index] as PIXI.Graphics;
+            goalVector.clear()
+                .moveTo(agent.x, agent.y)
+                .lineTo(
+                    scalePosition(goal.position.x),
+                    scalePosition(goal.position.y)
+                )
+                .stroke({
+                    color: AGENT_COLORS[index % AGENT_COLORS.length], 
+                    width: Math.max(1, GRID_UNIT_TO_PX / 25),
+                    cap: "round" as const
+                });
+        });
+    }, [solution]);
+
     // Animate the solution
     const animateSolution = useCallback(() => {
         if (app === null || viewport === null) return;
@@ -232,6 +250,7 @@ const PixiApp = forwardRef(({
             }
             if (timestepTextRef.current) timestepTextRef.current.text = "";
             if (goalMarkersRef.current) goalMarkersRef.current.removeChildren();
+            if (goalVectorsRef.current) goalVectorsRef.current.removeChildren();
         }
         if (solution === null) return;
         resetTimestep();
@@ -241,7 +260,6 @@ const PixiApp = forwardRef(({
 
         // Goal markers
         const goalMarkers = viewport.addChild(goalMarkersRef.current);
-        goalMarkers.visible = showGoals;
         solution[solution.length - 1].forEach((pose, agentId) => {
             const marker = goalMarkers.addChild(new PIXI.Graphics());
             const width = GRID_UNIT_TO_PX / 4;
@@ -292,6 +310,12 @@ const PixiApp = forwardRef(({
             idText.x = -idText.width / 2;
             idText.y = -idText.height / 2;
         });
+
+        // Goal vectors
+        const goalVectors = viewport.addChild(goalVectorsRef.current);
+        solution[solution.length - 1].forEach(() => {
+            goalVectors.addChild(new PIXI.Graphics());
+        });
     
         const animate = () => {
             if(timestepTextRef.current) {
@@ -309,10 +333,11 @@ const PixiApp = forwardRef(({
 
             moveAndRotateSprites(agents.children as PIXI.Container[], timestepRef.current);
             updatePaths(agents.children as PIXI.Container[], timestepRef.current);
+            updateGoalVectors(agents.children as PIXI.Container[]);
         }
         app.ticker.add(animate);
         tickerCallbackRef.current = animate;
-    }, [app, viewport, solution, moveAndRotateSprites, updatePaths, showGoals]);
+    }, [app, viewport, solution, moveAndRotateSprites, updatePaths, updateGoalVectors]);
 
     // Initialize the app and viewport when the canvas is ready
     useEffect(() => {
@@ -442,7 +467,10 @@ const PixiApp = forwardRef(({
     }, [showAgentId]);
 
     useEffect(() => {
-        tracePathsRef.current = tracePaths;
+        if (agentPathsRef.current) {
+            agentPathsRef.current.full.visible = tracePaths;
+            agentPathsRef.current.partial.visible = tracePaths;
+        }
     }, [tracePaths]);
 
     useEffect(() => {
@@ -458,6 +486,10 @@ const PixiApp = forwardRef(({
     useEffect(() => {
         if (goalMarkersRef.current) goalMarkersRef.current.visible = showGoals;
     }, [showGoals]);
+
+    useEffect(() => {
+        if (goalVectorsRef.current) goalVectorsRef.current.visible = showGoalVectors;
+    }, [showGoalVectors]);
 
     return <canvas ref={canvasRef} />
 });

@@ -23,8 +23,8 @@ import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import FlagIcon from '@mui/icons-material/Flag';
 import OutlinedFlagIcon from '@mui/icons-material/OutlinedFlag';
-// import PolylineIcon from '@mui/icons-material/Polyline';
-// import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
+import PolylineIcon from '@mui/icons-material/Polyline';
+import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 
 const STEP_SIZE_INCREMENT = 0.2;
 const STEP_SIZE_MAX = 10;
@@ -43,6 +43,7 @@ const TRACE_PATHS_KEY = 'p';
 const SCREENSHOT_KEY = 's';
 const SHOW_CELL_ID_KEY = 'c';
 const SHOW_GOALS_KEY = 'g';
+const SHOW_GOAL_VECTORS_KEY = 'v';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -65,6 +66,8 @@ interface AnimationControlProps {
     setShowCellId: (showCellId: boolean) => void;
     showGoals: boolean;
     setShowGoals: (showGoals: boolean) => void;
+    showGoalVectors: boolean;
+    setShowGoalVectors: (showGoalVectors: boolean) => void;
 }
 
 function AnimationControl({
@@ -88,6 +91,8 @@ function AnimationControl({
     setShowCellId,
     showGoals,
     setShowGoals,
+    showGoalVectors,
+    setShowGoalVectors,
 }: AnimationControlProps) {  
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
@@ -128,6 +133,8 @@ function AnimationControl({
                 setShowCellId(!showCellId);
             } else if (event.key === SHOW_GOALS_KEY) {
                 setShowGoals(!showGoals);
+            } else if (event.key === SHOW_GOAL_VECTORS_KEY) {
+                setShowGoalVectors(!showGoalVectors);
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -137,7 +144,8 @@ function AnimationControl({
     }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, 
         onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, 
         onSkipForward, onStepSizeChange, showAgentId, stepSize, onTracePathsChange, tracePaths, 
-        takeScreenshot, showCellId, setShowCellId, showGoals, setShowGoals]);
+        takeScreenshot, showCellId, setShowCellId, showGoals, setShowGoals, showGoalVectors, 
+        setShowGoalVectors]);
 
     return (
         <Stack direction="column" spacing={1}>
@@ -158,7 +166,7 @@ function AnimationControl({
                         max={STEP_SIZE_MAX}
                         valueLabelDisplay="auto"
                         onChange={handleSliderChange}
-                        sx={{ width: '50%', height: "auto"}}
+                        sx={{ width: '40%', height: "auto"}}
                     />
                 </Tooltip>
                 <Tooltip title="Reset step size">
@@ -207,6 +215,13 @@ function AnimationControl({
                             <FilterCenterFocusOutlinedIcon />
                         </Button>
                     </Tooltip>
+                    <Tooltip title={"Take screenshot" + ` (${SCREENSHOT_KEY})`}>
+                        <span>
+                            <Button disabled={!canScreenshot} onClick={takeScreenshot}>
+                                <ScreenshotMonitorOutlinedIcon />
+                            </Button>
+                        </span>
+                    </Tooltip>
                 </ButtonGroup>
             </Box>
             <Box display="flex" justifyContent="center">
@@ -239,16 +254,12 @@ function AnimationControl({
                             <OutlinedFlagIcon />}
                         </Button>
                     </Tooltip>
-                </ButtonGroup>
-            </Box>
-            <Box display="flex" justifyContent="center">
-                <ButtonGroup size="large" variant="outlined">
-                    <Tooltip title={"Take screenshot" + ` (${SCREENSHOT_KEY})`}>
-                        <span>
-                            <Button disabled={!canScreenshot} onClick={takeScreenshot}>
-                                <ScreenshotMonitorOutlinedIcon />
-                            </Button>
-                        </span>
+                    <Tooltip title={(showGoalVectors ? "Hide goal vectors" : "Show goal vectors") + ` (${SHOW_GOAL_VECTORS_KEY})`}>
+                        <Button onClick={() => setShowGoalVectors(!showGoalVectors)}>
+                            {showGoalVectors ?
+                            <PolylineIcon />:
+                            <PolylineOutlinedIcon />}
+                        </Button>
                     </Tooltip>
                 </ButtonGroup>
             </Box>

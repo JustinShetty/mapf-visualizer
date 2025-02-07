@@ -14,8 +14,8 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 - [x] Per-agent path drawing
 - [x] Keybindings for animation control
 - [x] Built-in screenshot capture with keybind
-- [ ] Show goal location
-- [ ] Render line between agent current location and goal
+- [x] Show goal location
+- [x] Render line between agent current location and goal
 
 ## Features
 

@@ -26,6 +26,7 @@ function App() {
   const [canScreenshot, setCanScreenshot] = React.useState<boolean>(true);
   const [showCellId, setShowCellId] = React.useState<boolean>(false);
   const [showGoals, setShowGoals] = React.useState<boolean>(true);
+  const [showGoalVectors, setShowGoalVectors] = React.useState<boolean>(false);
 
   const handleSkipBackward = () => {
     if (pixiAppRef.current?.skipBackward) {
@@ -74,6 +75,7 @@ function App() {
             setCanScreenshot={setCanScreenshot}
             showCellId={showCellId}
             showGoals={showGoals}
+            showGoalVectors={showGoalVectors}
           />
         </Grid>
         <Grid size={4}>
@@ -101,6 +103,8 @@ function App() {
             setShowCellId={setShowCellId}
             showGoals={showGoals}
             setShowGoals={setShowGoals}
+            showGoalVectors={showGoalVectors}
+            setShowGoalVectors={setShowGoalVectors}
           />
         </Grid>
       </Grid>
