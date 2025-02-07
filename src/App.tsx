@@ -69,7 +69,7 @@ function App() {
             loopAnimation={loopAnimation}
             showAgentId={showAgentId}
             tracePaths={tracePaths}
-            setCanScreenshot={(canScreenshot: boolean) => setCanScreenshot(canScreenshot)}
+            setCanScreenshot={setCanScreenshot}
           />
         </Grid>
         <Grid size={4}>
