@@ -71,7 +71,10 @@ const PixiApp = forwardRef(({
     const showAgentIdRef = useRef(showAgentId);
     const tickerCallbackRef = useRef<() => void>(() => {});
     const agentsRef = useRef<PIXI.Container | null>(null);
-    const agentPathsRef = useRef<PIXI.Container>(new PIXI.Container()); // same order as agentsRef
+    const agentPathsRef = useRef<{ full: PIXI.Container, partial: PIXI.Container }>({
+        full: new PIXI.Container(),
+        partial: new PIXI.Container()
+    });  // same order as agentsRef
     const tracePathsRef = useRef(tracePaths);
 
     // Scale a position from grid units to pixels
@@ -173,7 +176,8 @@ const PixiApp = forwardRef(({
     const updatePaths = useCallback((agents: PIXI.Container[], currentTime: number) => {
         if (solution === null) return;
 
-        agentPathsRef.current.visible = tracePathsRef.current;
+        agentPathsRef.current.full.visible = tracePathsRef.current;
+        agentPathsRef.current.partial.visible = tracePathsRef.current;
 
         const currentTimestep = Math.floor(currentTime);
         const interpolationProgress = currentTime - currentTimestep;
@@ -186,21 +190,20 @@ const PixiApp = forwardRef(({
                 cap: "round" as const
             };
 
-            const path = agentPathsRef.current.children[index] as PIXI.Container
+            const full_segments = agentPathsRef.current.full.children[index] as PIXI.Container
+            const partial_segments = agentPathsRef.current.partial.children[index] as PIXI.Container
 
-            // Remove segments beyond and including the current time 
-            // We have to remove and redraw the last segment because
-            // we can't tell whether it's a complete or an unfinished
-            // partial segment
-            while (path.children.length >= currentTimestep) {
-                if (path.children.length === 0) break;
-                path.removeChildAt(path.children.length - 1);
+
+            while(full_segments.children.length > currentTimestep) {
+                if (full_segments.children.length === 0) break;
+                full_segments.removeChildAt(full_segments.children.length - 1);
             }
+            partial_segments.removeChildren();
 
             // Full segments
-            while (path.children.length < currentTimestep) {
-                const segIndex = path.children.length;
-                const segment = path.addChild(new PIXI.Graphics());
+            while (full_segments.children.length < currentTimestep) {
+                const segIndex = full_segments.children.length;
+                const segment = full_segments.addChild(new PIXI.Graphics());
                 segment.moveTo(
                     scalePosition(solution[segIndex][index].position.x),
                     scalePosition(solution[segIndex][index].position.y)
@@ -214,7 +217,8 @@ const PixiApp = forwardRef(({
 
             // Partial segment
             if (interpolationProgress > 0 && currentTimestep < solution.length - 1) {
-                const segment = path.children.length === currentTimestep ? path.addChild(new PIXI.Graphics()) : path.children[currentTimestep] as PIXI.Graphics;
+                const segment = partial_segments.addChild(new PIXI.Graphics());
+            //     const segment = path.children.length === currentTimestep ? path.addChild(new PIXI.Graphics()) : path.children[currentTimestep] as PIXI.Graphics;
                 segment.moveTo(
                     scalePosition(solution[currentTimestep][index].position.x),
                     scalePosition(solution[currentTimestep][index].position.y)
@@ -237,7 +241,10 @@ const PixiApp = forwardRef(({
         if (tickerCallbackRef.current) {
             app.ticker.remove(tickerCallbackRef.current);
             if (agentsRef.current) viewport.removeChild(agentsRef.current);
-            if (agentPathsRef.current) agentPathsRef.current.removeChildren();
+            if (agentPathsRef.current) {
+                agentPathsRef.current.full.removeChildren();
+                agentPathsRef.current.partial.removeChildren();
+            }
             if (timestepTextRef.current) timestepTextRef.current.text = "";
         }
         if (solution === null) return;
@@ -248,9 +255,11 @@ const PixiApp = forwardRef(({
 
         // Create paths for each agent in the first configuration
         // Need to do this first so paths are rendered below agents
-        viewport.addChild(agentPathsRef.current);
+        viewport.addChild(agentPathsRef.current.full);
+        viewport.addChild(agentPathsRef.current.partial);
         solution[0].forEach(() => {
-            agentPathsRef.current.addChild(new PIXI.Container());
+            agentPathsRef.current.full.addChild(new PIXI.Container());
+            agentPathsRef.current.partial.addChild(new PIXI.Container());
         });
 
         // Create agents based on the first configuration
