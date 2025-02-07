@@ -278,6 +278,12 @@ const PixiApp = forwardRef(({
             agentPathsRef.current.partial.addChild(new PIXI.Container());
         });
 
+        // Goal vectors
+        const goalVectors = viewport.addChild(goalVectorsRef.current);
+        solution[solution.length - 1].forEach(() => {
+            goalVectors.addChild(new PIXI.Graphics());
+        });
+
         // Agents
         const agents = viewport.addChild(new PIXI.Container());
         agentsRef.current = agents;
@@ -309,12 +315,6 @@ const PixiApp = forwardRef(({
             idText.scale.set(1 / FONT_SUPER_RESOLUTION_SCALE, 1 / FONT_SUPER_RESOLUTION_SCALE);
             idText.x = -idText.width / 2;
             idText.y = -idText.height / 2;
-        });
-
-        // Goal vectors
-        const goalVectors = viewport.addChild(goalVectorsRef.current);
-        solution[solution.length - 1].forEach(() => {
-            goalVectors.addChild(new PIXI.Graphics());
         });
     
         const animate = () => {
