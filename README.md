@@ -2,21 +2,6 @@
 
 This repository hosts the web-based version of the MAPF (Multi-Agent Pathfinding) Visualizer, adapted from the original [Kei18/mapf-visualizer](https://github.com/Kei18/mapf-visualizer). The app provides an interactive and intuitive way to visualize MAPF solutions directly in your browser.
 
-## Feature Roadmap
-This is a work-in-progress and has not yet reached feature parity with [Kei18/mapf-visualizer](https://github.com/Kei18/mapf-visualizer).
-- [x] Map plotting
-- [x] Basic solution animation (with and without rotation)
-- [x] Playback control (play, pause, reset, speed adjustment, etc.)
-- [x] Timestep display
-- [x] Playback control tooltips
-- [x] Agent ID display
-- [x] Agent coloring
-- [x] Per-agent path drawing
-- [x] Keybindings for animation control
-- [x] Built-in screenshot capture with keybind
-- [x] Show goal location
-- [x] Render line between agent current location and goal
-
 ## Features
 
 - **Browser-Based Interface**: No installation required, simply access the app through the GitHub Pages site.
@@ -29,9 +14,19 @@ This is a work-in-progress and has not yet reached feature parity with [Kei18/ma
 2. **Upload a Solution File**: Load the corresponding solution file (.txt format).
 3. **Visualize**: The solution will automatically play
 4. **Controls**:
-   - **Play/Pause**: Start or pause the visualization.
-   - **Step Forward/Backward**: Navigate the simulation frame-by-frame.
-   - **Speed Adjustment**: Change the playback speed.
+    - **Play/Pause**: Start or pause the visualization.
+    - **Step Forward/Backward**: Navigate the simulation frame-by-frame.
+    - **Step Size Adjustment**: Change the playback speed.
+    - **Restart Animation**: Restart the visualization from the beginning.
+    - **Toggle Animation**: Enable or disable the animation.
+    - **Reset View**: Reset the visualization to the initial view.
+    - **Take a Screenshot**: Capture the current state of the visualization as an image.
+    - **Toggle Agent IDs**: Show or hide the IDs of the agents.
+    - **Toggle Cell IDs**: Show or hide the IDs of the cells.
+    - **Toggle Traveled Paths**: Show or hide the paths that agents have traveled.
+    - **Toggle Goal Markers**: Show or hide the goal markers for the agents.
+    - **Toggle Goal Vectors**: Show or hide the vectors pointing to the agents' goals.
+
 
 ## File Format
 
@@ -82,3 +77,41 @@ Special thanks to [Kei18](https://github.com/Kei18) for creating the original MA
 ## Contact
 
 For questions or support, feel free to open an issue.
+
+## Contributing
+If you wish to contribute, please open a pull request and I'll review the changes as soon as practical.
+
+<details>
+  <summary>Development Instructions</summary>
+
+### Running the Development Server
+
+To run the development server locally, follow these steps:
+
+1. **Clone the Repository**:
+   ```sh
+   git clone https://github.com/JustinShetty/mapf-visualizer.git
+   cd mapf-visualizer
+   ```
+
+2. **Install Dependencies**:
+   ```sh
+   npm install
+   ```
+
+3. **Start the Development Server**:
+   ```sh
+   npm run dev
+   ```
+
+### Linting the Codebase
+
+To maintain code quality, lint the codebase using the following commands:
+
+1. **Run Linter**:
+   ```sh
+   npm run lint
+   ```
+
+</details>
+
