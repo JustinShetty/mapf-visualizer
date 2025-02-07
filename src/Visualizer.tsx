@@ -13,6 +13,7 @@ interface VisualizerProps {
   loopAnimation: boolean;
   showAgentId: boolean;
   tracePaths: boolean;
+  setCanScreenshot: (canScreenshot: boolean) => void;
 }
 
 function Visualizer({
@@ -24,6 +25,7 @@ function Visualizer({
   loopAnimation,
   showAgentId,
   tracePaths,
+  setCanScreenshot,
 }: VisualizerProps) {
   const [viewportSize, setViewportSize] = useState<{ width: number; height: number } | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -58,6 +60,7 @@ function Visualizer({
           loopAnimation={loopAnimation}
           showAgentId={showAgentId}
           tracePaths={tracePaths}
+          setCanScreenshot={setCanScreenshot}
         />
       }
       </div>

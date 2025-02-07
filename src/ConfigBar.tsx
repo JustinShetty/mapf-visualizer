@@ -26,6 +26,8 @@ interface ConfigBarProps {
   onShowAgentIdChange: (showAgentId: boolean) => void;
   tracePaths: boolean;
   onTracePathsChange: (tracePaths: boolean) => void;
+  canScreenshot: boolean;
+  takeScreenshot: () => void;
 }
 
 function ConfigBar({
@@ -46,6 +48,8 @@ function ConfigBar({
   onShowAgentIdChange,
   tracePaths,
   onTracePathsChange,
+  canScreenshot,
+  takeScreenshot,
 }: ConfigBarProps) {
   const repoName = "JustinShetty/mapf-visualizer";
   const [mapFile, setMapFile] = React.useState<File | null>(null);
@@ -157,10 +161,16 @@ function ConfigBar({
                 children: <ClearIcon fontSize="small" />
               }}
           />
-          <Tooltip title={`Download ${mapFile?.name}`}>
-            <Button disabled={mapFile === null} onClick={() => {downloadFile(mapFile as File)}}>
-              <FileDownloadOutlinedIcon />
-            </Button>
+          <Tooltip title={mapFile ? `Download ${mapFile?.name}` : ""}>
+            <span>
+              <Button 
+                disabled={mapFile === null} 
+                onClick={() => {downloadFile(mapFile as File)}}
+                sx={{height: '100%'}}
+              >
+                <FileDownloadOutlinedIcon />
+              </Button>
+            </span>
           </Tooltip>
         </Stack>
         {mapError && <p style={{color: 'red'}}>{mapError}</p>}
@@ -179,10 +189,16 @@ function ConfigBar({
                   children: <ClearIcon fontSize="small" />
                 }}
             />
-            <Tooltip title={`Download ${solutionFile?.name}`}>
-              <Button disabled={solutionFile === null} onClick={() => {downloadFile(solutionFile as File)}}>
-                <FileDownloadOutlinedIcon />
-              </Button>
+            <Tooltip title={solutionFile ? `Download ${solutionFile?.name}` : ""}>
+              <div>
+                <Button 
+                  disabled={solutionFile === null} 
+                  onClick={() => {downloadFile(solutionFile as File)}}
+                  sx={{height: '100%'}}
+                >
+                  <FileDownloadOutlinedIcon />
+                </Button>
+              </div>
             </Tooltip>
           </Stack>
           {solutionError && <p style={{color: 'red'}}>{solutionError}</p>}
@@ -203,6 +219,8 @@ function ConfigBar({
         onShowAgentIdChange={onShowAgentIdChange}
         tracePaths={tracePaths}
         onTracePathsChange={onTracePathsChange}
+        canScreenshot={canScreenshot}
+        takeScreenshot={takeScreenshot}
       />
       <Divider />
       <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white', width: 'fit-content' }}>

@@ -10,13 +10,14 @@ import Slider from '@mui/material/Slider';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import RepeatOnIcon from '@mui/icons-material/RepeatOn';
 import Stack from '@mui/material/Stack';
-import CropFreeIcon from '@mui/icons-material/CropFree';
 import Tooltip from '@mui/material/Tooltip';
 import LooksOneIcon from '@mui/icons-material/LooksOne';
 import LooksOneOutlinedIcon from '@mui/icons-material/LooksOneOutlined';
 import { useEffect } from 'react';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import DirectionsOutlinedIcon from '@mui/icons-material/DirectionsOutlined';
+import FilterCenterFocusOutlinedIcon from '@mui/icons-material/FilterCenterFocusOutlined';
+import ScreenshotMonitorOutlinedIcon from '@mui/icons-material/ScreenshotMonitorOutlined';
 
 const SPEED_STEP = 0.2;
 const SPEED_MAX = 10;
@@ -32,6 +33,7 @@ const SHOW_AGENT_ID_KEY = 'a';
 const SPEED_UP_KEY = 'ArrowUp';
 const SPEED_DOWN_KEY = 'ArrowDown';
 const TRACE_PATHS_KEY = 't';
+const SCREENSHOT_KEY = 's';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -48,6 +50,8 @@ interface AnimationControlProps {
     onShowAgentIdChange: (showAgentId: boolean) => void;
     tracePaths: boolean;
     onTracePathsChange: (tracePaths: boolean) => void;
+    canScreenshot: boolean;
+    takeScreenshot: () => void;
 }
 
 function AnimationControl({
@@ -64,7 +68,9 @@ function AnimationControl({
     showAgentId,
     onShowAgentIdChange,
     tracePaths,
-    onTracePathsChange
+    onTracePathsChange,
+    canScreenshot,
+    takeScreenshot,
 }: AnimationControlProps) {  
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
@@ -99,6 +105,8 @@ function AnimationControl({
                 onSpeedChange(speed - SPEED_STEP);
             } else if (event.key === TRACE_PATHS_KEY) {
                 onTracePathsChange(!tracePaths);
+            } else if (event.key === SCREENSHOT_KEY) {
+                takeScreenshot();
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -107,7 +115,8 @@ function AnimationControl({
         };
     }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, 
         onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, 
-        onSkipForward, onSpeedChange, showAgentId, speed, onTracePathsChange, tracePaths]);
+        onSkipForward, onSpeedChange, showAgentId, speed, onTracePathsChange, tracePaths, 
+        takeScreenshot]);
 
     return (
         <Stack direction="column" spacing={2}>
@@ -130,15 +139,15 @@ function AnimationControl({
                             <SkipNextIcon />
                         </Button>
                     </Tooltip>
-                </ButtonGroup>
-            </Box>
-            <Box display="flex" justifyContent="center">
-                <ButtonGroup size="large" variant="outlined">
                     <Tooltip title={`Restart animation (${RESTART_KEY})`}>
                         <Button onClick={onRestart}>
                             <RestartAltIcon />
                         </Button>
                     </Tooltip>
+                </ButtonGroup>
+            </Box>
+            <Box display="flex" justifyContent="center">
+                <ButtonGroup size="large" variant="outlined">
                     <Tooltip title={(loopAnimation ? "Disable loop" : "Enable loop") + ` (${LOOP_KEY})`}>
                         <Button onClick={() => onLoopAnimationChange(!loopAnimation)}>
                             {loopAnimation ? 
@@ -148,7 +157,7 @@ function AnimationControl({
                     </Tooltip>
                     <Tooltip title={`Reset view (${FIT_VIEW_KEY})`}>
                         <Button onClick={onFitView}>
-                            <CropFreeIcon />
+                            <FilterCenterFocusOutlinedIcon />
                         </Button>
                     </Tooltip>
                     <Tooltip title={(showAgentId ? "Hide agent ID" : "Show agent ID") + ` (${SHOW_AGENT_ID_KEY})`}>
@@ -164,6 +173,13 @@ function AnimationControl({
                             <DirectionsIcon />:
                             <DirectionsOutlinedIcon />}
                         </Button>
+                    </Tooltip>
+                    <Tooltip title={"Take screenshot" + ` (${SCREENSHOT_KEY})`}>
+                        <span>
+                            <Button disabled={!canScreenshot} onClick={takeScreenshot}>
+                                <ScreenshotMonitorOutlinedIcon />
+                            </Button>
+                        </span>
                     </Tooltip>
                 </ButtonGroup>
             </Box>

@@ -23,6 +23,7 @@ function App() {
   const [loopAnimation, setLoopAnimation] = React.useState<boolean>(true);
   const [showAgentId, setShowAgentId] = React.useState<boolean>(false);
   const [tracePaths, setTracePaths] = React.useState<boolean>(true);
+  const [canScreenshot, setCanScreenshot] = React.useState<boolean>(true);
 
   const handleSkipBackward = () => {
     if (pixiAppRef.current?.skipBackward) {
@@ -68,12 +69,10 @@ function App() {
             loopAnimation={loopAnimation}
             showAgentId={showAgentId}
             tracePaths={tracePaths}
+            setCanScreenshot={(canScreenshot: boolean) => setCanScreenshot(canScreenshot)}
           />
         </Grid>
         <Grid size={4}>
-          <div onClick={handleTakeScreenshot}>
-            Click to take screenshot
-          </div>
           <ConfigBar
             graph={graph}
             onGraphChange={useCallback((graph: Graph | null) => setGraph(graph), [])}
@@ -92,6 +91,8 @@ function App() {
             onShowAgentIdChange={(showAgentId: boolean) => setShowAgentId(showAgentId)}
             tracePaths={tracePaths}
             onTracePathsChange={(tracePaths: boolean) => setTracePaths(tracePaths)}
+            canScreenshot={canScreenshot}
+            takeScreenshot={handleTakeScreenshot}
           />
         </Grid>
       </Grid>
