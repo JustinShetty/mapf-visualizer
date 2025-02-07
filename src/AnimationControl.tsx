@@ -18,6 +18,7 @@ import DirectionsIcon from '@mui/icons-material/Directions';
 import DirectionsOutlinedIcon from '@mui/icons-material/DirectionsOutlined';
 import FilterCenterFocusOutlinedIcon from '@mui/icons-material/FilterCenterFocusOutlined';
 import ScreenshotMonitorOutlinedIcon from '@mui/icons-material/ScreenshotMonitorOutlined';
+import StartIcon from '@mui/icons-material/Start';
 
 const SPEED_STEP = 0.2;
 const SPEED_MAX = 10;
@@ -139,15 +140,15 @@ function AnimationControl({
                             <SkipNextIcon />
                         </Button>
                     </Tooltip>
-                    <Tooltip title={`Restart animation (${RESTART_KEY})`}>
-                        <Button onClick={onRestart}>
-                            <RestartAltIcon />
-                        </Button>
-                    </Tooltip>
                 </ButtonGroup>
             </Box>
             <Box display="flex" justifyContent="center">
                 <ButtonGroup size="large" variant="outlined">
+                    <Tooltip title={`Restart animation (${RESTART_KEY})`}>
+                        <Button onClick={onRestart}>
+                            <StartIcon />
+                        </Button>
+                    </Tooltip>
                     <Tooltip title={(loopAnimation ? "Disable loop" : "Enable loop") + ` (${LOOP_KEY})`}>
                         <Button onClick={() => onLoopAnimationChange(!loopAnimation)}>
                             {loopAnimation ? 
@@ -155,6 +156,10 @@ function AnimationControl({
                             <RepeatIcon />}
                         </Button>
                     </Tooltip>
+                </ButtonGroup>
+            </Box>
+            <Box display="flex" justifyContent="center">
+                <ButtonGroup size="large" variant="outlined">
                     <Tooltip title={`Reset view (${FIT_VIEW_KEY})`}>
                         <Button onClick={onFitView}>
                             <FilterCenterFocusOutlinedIcon />
@@ -183,7 +188,7 @@ function AnimationControl({
                     </Tooltip>
                 </ButtonGroup>
             </Box>
-            <Box display='flex' justifyContent='center'>
+            <Stack direction="row" spacing={2} justifyContent="center">
                 <Tooltip 
                     title={
                         <div style={{ textAlign: 'center' }}>
@@ -200,10 +205,15 @@ function AnimationControl({
                         max={SPEED_MAX}
                         valueLabelDisplay="auto"
                         onChange={handleSliderChange}
-                        sx={{ width: '50%' }}
+                        sx={{ width: '50%', height: "auto"}}
                     />
                 </Tooltip>
-            </Box>
+                <Tooltip title="Reset speed">
+                    <Button onClick={() => onSpeedChange(1)}>
+                        <RestartAltIcon />
+                    </Button>
+                </Tooltip>
+            </Stack>
         </Stack>
     );   
 }
