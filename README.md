@@ -1,6 +1,11 @@
 # `JustinShetty/mapf-visualizer`
 
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+[![ci](https://github.com/JustinShetty/mapf-visualizer/actions/workflows/ci.yml/badge.svg)](https://github.com/JustinShetty/mapf-visualizer/actions/workflows/ci.yml)
+
 This repository hosts the web-based version of the MAPF (Multi-Agent Pathfinding) Visualizer, adapted from the original [Kei18/mapf-visualizer](https://github.com/Kei18/mapf-visualizer). The app provides an interactive and intuitive way to visualize MAPF solutions directly in your browser.
+
+This project runs entirely client-side and built using [React](https://reactjs.org/) and [PixiJS](https://pixijs.com/).
 
 ## Features
 
