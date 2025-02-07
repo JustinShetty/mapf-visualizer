@@ -25,6 +25,7 @@ function App() {
   const [tracePaths, setTracePaths] = React.useState<boolean>(true);
   const [canScreenshot, setCanScreenshot] = React.useState<boolean>(true);
   const [showCellId, setShowCellId] = React.useState<boolean>(false);
+  const [showGoals, setShowGoals] = React.useState<boolean>(true);
 
   const handleSkipBackward = () => {
     if (pixiAppRef.current?.skipBackward) {
@@ -72,6 +73,7 @@ function App() {
             tracePaths={tracePaths}
             setCanScreenshot={setCanScreenshot}
             showCellId={showCellId}
+            showGoals={showGoals}
           />
         </Grid>
         <Grid size={4}>
@@ -80,23 +82,25 @@ function App() {
             onGraphChange={useCallback((graph: Graph | null) => setGraph(graph), [])}
             onSolutionChange={useCallback((solution: Solution | null) => setSolution(solution), [])}
             playAnimation={playAnimation}
-            onPlayAnimationChange={(playAnimation: boolean) => setPlayAnimation(playAnimation)}
+            onPlayAnimationChange={setPlayAnimation}
             onSkipBackward={handleSkipBackward}
             onSkipForward={handleSkipForward}
             onRestart={handleRestart}
             stepSize={stepSize}
             onStepSizeChange={setStepSize}
             loopAnimation={loopAnimation}
-            onLoopAnimationChange={(loopAnimation: boolean) => setLoopAnimation(loopAnimation)}
+            onLoopAnimationChange={setLoopAnimation}
             onFitView={handleFitView}
             showAgentId={showAgentId}
-            onShowAgentIdChange={(showAgentId: boolean) => setShowAgentId(showAgentId)}
+            onShowAgentIdChange={setShowAgentId}
             tracePaths={tracePaths}
-            onTracePathsChange={(tracePaths: boolean) => setTracePaths(tracePaths)}
+            onTracePathsChange={setTracePaths}
             canScreenshot={canScreenshot}
             takeScreenshot={handleTakeScreenshot}
             showCellId={showCellId}
             setShowCellId={setShowCellId}
+            showGoals={showGoals}
+            setShowGoals={setShowGoals}
           />
         </Grid>
       </Grid>

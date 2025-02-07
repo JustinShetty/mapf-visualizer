@@ -15,6 +15,7 @@ interface VisualizerProps {
   tracePaths: boolean;
   setCanScreenshot: (canScreenshot: boolean) => void;
   showCellId: boolean;
+  showGoals: boolean;
 }
 
 function Visualizer({
@@ -28,6 +29,7 @@ function Visualizer({
   tracePaths,
   setCanScreenshot,
   showCellId,
+  showGoals,
 }: VisualizerProps) {
   const [viewportSize, setViewportSize] = useState<{ width: number; height: number } | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -64,6 +66,7 @@ function Visualizer({
           tracePaths={tracePaths}
           setCanScreenshot={setCanScreenshot}
           showCellId={showCellId}
+          showGoals={showGoals}
         />
       }
       </div>

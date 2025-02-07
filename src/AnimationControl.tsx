@@ -21,6 +21,10 @@ import ScreenshotMonitorOutlinedIcon from '@mui/icons-material/ScreenshotMonitor
 import StartIcon from '@mui/icons-material/Start';
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
+import FlagIcon from '@mui/icons-material/Flag';
+import OutlinedFlagIcon from '@mui/icons-material/OutlinedFlag';
+// import PolylineIcon from '@mui/icons-material/Polyline';
+// import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 
 const STEP_SIZE_INCREMENT = 0.2;
 const STEP_SIZE_MAX = 10;
@@ -38,6 +42,7 @@ const STEP_SIZE_DOWN_KEY = 'ArrowDown';
 const TRACE_PATHS_KEY = 'p';
 const SCREENSHOT_KEY = 's';
 const SHOW_CELL_ID_KEY = 'c';
+const SHOW_GOALS_KEY = 'g';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -58,6 +63,8 @@ interface AnimationControlProps {
     takeScreenshot: () => void;
     showCellId: boolean;
     setShowCellId: (showCellId: boolean) => void;
+    showGoals: boolean;
+    setShowGoals: (showGoals: boolean) => void;
 }
 
 function AnimationControl({
@@ -79,6 +86,8 @@ function AnimationControl({
     takeScreenshot,
     showCellId,
     setShowCellId,
+    showGoals,
+    setShowGoals,
 }: AnimationControlProps) {  
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
@@ -117,6 +126,8 @@ function AnimationControl({
                 takeScreenshot();
             } else if (event.key === SHOW_CELL_ID_KEY) {
                 setShowCellId(!showCellId);
+            } else if (event.key === SHOW_GOALS_KEY) {
+                setShowGoals(!showGoals);
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -126,10 +137,10 @@ function AnimationControl({
     }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, 
         onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, 
         onSkipForward, onStepSizeChange, showAgentId, stepSize, onTracePathsChange, tracePaths, 
-        takeScreenshot, showCellId, setShowCellId]);
+        takeScreenshot, showCellId, setShowCellId, showGoals, setShowGoals]);
 
     return (
-        <Stack direction="column" spacing={2}>
+        <Stack direction="column" spacing={1}>
             <Stack direction="row" spacing={2} justifyContent="center">
                 <Tooltip 
                     title={
@@ -221,6 +232,17 @@ function AnimationControl({
                             <DirectionsOutlinedIcon />}
                         </Button>
                     </Tooltip>
+                    <Tooltip title={(showGoals ? "Hide goals" : "Show goals") + ` (${SHOW_GOALS_KEY})`}>
+                        <Button onClick={() => setShowGoals(!showGoals)}>
+                            {showGoals ?
+                            <FlagIcon />:
+                            <OutlinedFlagIcon />}
+                        </Button>
+                    </Tooltip>
+                </ButtonGroup>
+            </Box>
+            <Box display="flex" justifyContent="center">
+                <ButtonGroup size="large" variant="outlined">
                     <Tooltip title={"Take screenshot" + ` (${SCREENSHOT_KEY})`}>
                         <span>
                             <Button disabled={!canScreenshot} onClick={takeScreenshot}>

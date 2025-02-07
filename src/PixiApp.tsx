@@ -21,6 +21,7 @@ interface PixiAppProps {
     tracePaths: boolean;
     setCanScreenshot: (canScreenshot: boolean) => void;
     showCellId: boolean,
+    showGoals: boolean,
 }
 
 function drawGrid(viewport: Viewport, graph: Graph, showCellId: boolean) : PIXI.Container {
@@ -71,6 +72,7 @@ const PixiApp = forwardRef(({
     tracePaths,
     setCanScreenshot,
     showCellId,
+    showGoals,
 }: PixiAppProps, ref) => {
     // this is a mess of state and refs, but how I got everything to work...
     // maybe someday I will clean this up or maybe someone who knows React better than me can help
@@ -439,6 +441,14 @@ const PixiApp = forwardRef(({
             }
         });
     }, [showCellId, grid]);
+
+    useEffect(() => {
+        if (!grid) return;
+        // grid.children.forEach((cellContainer) => {
+        //     const cellGraphic = cellContainer.children[0];
+        //     cellGraphic.visible = showGoals;
+        // });
+    }, [showGoals, grid]);
 
     return <canvas ref={canvasRef} />
 });
