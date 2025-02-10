@@ -159,7 +159,7 @@ function AnimationControl({
                     }
                 >
                     <Slider
-                        value={stepSize}
+                        value={Number(stepSize.toFixed(1))}
                         step={STEP_SIZE_INCREMENT}
                         marks
                         min={STEP_SIZE_MIN}
