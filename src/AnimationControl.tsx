@@ -93,12 +93,14 @@ function AnimationControl({
     setShowGoals,
     showGoalVectors,
     setShowGoalVectors,
-}: AnimationControlProps) {  
+}: AnimationControlProps) { 
+    const roundAndSetStepSize = (value: number) => {
+        onStepSizeChange(Number(value.toFixed(1)));
+    }
+    
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
-        if (typeof value === 'number') {
-            onStepSizeChange(value);
-        }
+        if (typeof value === 'number') roundAndSetStepSize(value);
     };
 
     useEffect(() => {
@@ -122,9 +124,9 @@ function AnimationControl({
             } else if (event.key === SHOW_AGENT_ID_KEY) {
                 onShowAgentIdChange(!showAgentId);
             } else if (event.key === STEP_SIZE_UP_KEY && stepSize + STEP_SIZE_INCREMENT <= STEP_SIZE_MAX) {
-                onStepSizeChange(stepSize + STEP_SIZE_INCREMENT);
+                roundAndSetStepSize(stepSize + STEP_SIZE_INCREMENT);
             } else if (event.key === STEP_SIZE_DOWN_KEY && stepSize - STEP_SIZE_INCREMENT >= STEP_SIZE_MIN) {
-                onStepSizeChange(stepSize - STEP_SIZE_INCREMENT);
+                roundAndSetStepSize(stepSize - STEP_SIZE_INCREMENT);
             } else if (event.key === TRACE_PATHS_KEY) {
                 onTracePathsChange(!tracePaths);
             } else if (event.key === SCREENSHOT_KEY) {
@@ -159,7 +161,7 @@ function AnimationControl({
                     }
                 >
                     <Slider
-                        value={Number(stepSize.toFixed(1))}
+                        value={stepSize}
                         step={STEP_SIZE_INCREMENT}
                         marks
                         min={STEP_SIZE_MIN}
@@ -170,7 +172,7 @@ function AnimationControl({
                     />
                 </Tooltip>
                 <Tooltip title="Reset step size">
-                    <Button onClick={() => onStepSizeChange(1)}>
+                    <Button onClick={() => roundAndSetStepSize(1)}>
                         <RestartAltIcon />
                     </Button>
                 </Tooltip>
