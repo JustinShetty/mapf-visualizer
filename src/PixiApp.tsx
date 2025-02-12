@@ -382,9 +382,22 @@ const PixiApp = forwardRef(({
                         },
                     });
                     timestepTextRef.current = hudRef.current.addChild(
-                        new PIXI.Text({style: textStyle})
+                        new PIXI.Text({
+                            x: width / 100,
+                            y: height / 100,
+                            style: textStyle,
+                        })
                     );
-                    timestepTextRef.current.position.set(width / 100, height / 100);
+
+                    hudRef.current.addChild(
+                        new PIXI.Text({
+                            x: width - width / 100,
+                            y: height / 100,
+                            anchor: new PIXI.Point(1, 0),
+                            text: "Click and drag to pan. Scroll to zoom.",
+                            style: textStyle,
+                        })
+                    );
                 }
                 app.start();
             }
@@ -423,8 +436,8 @@ const PixiApp = forwardRef(({
             }
         }
     
-        viewport.worldHeight = grid.height * 1.1;
-        viewport.worldWidth = grid.width * 1.1;
+        viewport.worldHeight = grid.height * 1.2;
+        viewport.worldWidth = grid.width * 1.2;
         return grid;
     }, [viewport, graph]);
 
@@ -433,6 +446,12 @@ const PixiApp = forwardRef(({
         if (app !== null && viewport !== null) {
             app.renderer.resize(width, height);
             viewport.resize(width, height);
+            if (hudRef.current) {
+                hudRef.current.children[0].x = width / 100;
+                hudRef.current.children[0].y = height / 100;
+                hudRef.current.children[1].x = width - width / 100;
+                hudRef.current.children[1].y = height / 100;
+            }
             fit();
         }
     }, [app, fit, viewport, width, height]);
