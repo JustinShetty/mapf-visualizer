@@ -5,7 +5,7 @@
 
 This repository hosts the web-based version of the MAPF (Multi-Agent Pathfinding) Visualizer, adapted from the original [Kei18/mapf-visualizer](https://github.com/Kei18/mapf-visualizer). The app provides an interactive and intuitive way to visualize MAPF solutions directly in your browser.
 
-This project runs entirely client-side and built using [React](https://reactjs.org/) and [PixiJS](https://pixijs.com/).
+This project runs entirely client-side and is built using [React](https://reactjs.org/) and [PixiJS](https://pixijs.com/).
 
 ## Features
 
