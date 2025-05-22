@@ -1,18 +1,8 @@
-export const BACKGROUND_COLOR = 0xFFFFFF;
+export const BACKGROUND_COLOR = 0xffffff;
 export const GRID_COLOR = 0x000000;
 export const TEXT_COLOR = GRID_COLOR;
 
 export const AGENT_COLORS: number[] = [
-    0xE91E63,
-    0x2196F3,
-    0x4CAF50,
-    0xFF9800,
-    0x00BCD4,
-    0x9C27B0,
-    0x795548,
-    0xFFBB3B,
-    0xF44336,
-    0x607D8B,
-    0x009688,
-    0x3F51B5
-  ];
+    0xe91e63, 0x2196f3, 0x4caf50, 0xff9800, 0x00bcd4, 0x9c27b0, 0x795548,
+    0xffbb3b, 0xf44336, 0x607d8b, 0x009688, 0x3f51b5,
+];
