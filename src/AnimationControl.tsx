@@ -1,49 +1,49 @@
-import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseTwoToneIcon from "@mui/icons-material/PauseTwoTone";
-import SkipNextIcon from "@mui/icons-material/SkipNext";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Box from "@mui/material/Box";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import Slider from "@mui/material/Slider";
-import RepeatIcon from "@mui/icons-material/Repeat";
-import RepeatOnIcon from "@mui/icons-material/RepeatOn";
-import Stack from "@mui/material/Stack";
-import Tooltip from "@mui/material/Tooltip";
-import LooksOneIcon from "@mui/icons-material/LooksOne";
-import LooksOneOutlinedIcon from "@mui/icons-material/LooksOneOutlined";
-import { useEffect } from "react";
-import DirectionsIcon from "@mui/icons-material/Directions";
-import DirectionsOutlinedIcon from "@mui/icons-material/DirectionsOutlined";
-import FilterCenterFocusOutlinedIcon from "@mui/icons-material/FilterCenterFocusOutlined";
-import ScreenshotMonitorOutlinedIcon from "@mui/icons-material/ScreenshotMonitorOutlined";
-import StartIcon from "@mui/icons-material/Start";
-import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
-import SmartToyIcon from "@mui/icons-material/SmartToy";
-import FlagIcon from "@mui/icons-material/Flag";
-import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag";
-import PolylineIcon from "@mui/icons-material/Polyline";
-import PolylineOutlinedIcon from "@mui/icons-material/PolylineOutlined";
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseTwoToneIcon from '@mui/icons-material/PauseTwoTone';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Box from '@mui/material/Box';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import Slider from '@mui/material/Slider';
+import RepeatIcon from '@mui/icons-material/Repeat';
+import RepeatOnIcon from '@mui/icons-material/RepeatOn';
+import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
+import LooksOneIcon from '@mui/icons-material/LooksOne';
+import LooksOneOutlinedIcon from '@mui/icons-material/LooksOneOutlined';
+import { useEffect } from 'react';
+import DirectionsIcon from '@mui/icons-material/Directions';
+import DirectionsOutlinedIcon from '@mui/icons-material/DirectionsOutlined';
+import FilterCenterFocusOutlinedIcon from '@mui/icons-material/FilterCenterFocusOutlined';
+import ScreenshotMonitorOutlinedIcon from '@mui/icons-material/ScreenshotMonitorOutlined';
+import StartIcon from '@mui/icons-material/Start';
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import FlagIcon from '@mui/icons-material/Flag';
+import OutlinedFlagIcon from '@mui/icons-material/OutlinedFlag';
+import PolylineIcon from '@mui/icons-material/Polyline';
+import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 
 const STEP_SIZE_INCREMENT = 0.2;
 const STEP_SIZE_MAX = 10;
 const STEP_SIZE_MIN = 0.2;
 
-const STEP_BACKWARD_KEY = "ArrowLeft";
-const PLAY_PAUSE_KEY = " ";
-const STEP_FORWARD_KEY = "ArrowRight";
-const RESTART_KEY = "r";
-const LOOP_KEY = "l";
-const FIT_VIEW_KEY = "f";
-const SHOW_AGENT_ID_KEY = "a";
-const STEP_SIZE_UP_KEY = "ArrowUp";
-const STEP_SIZE_DOWN_KEY = "ArrowDown";
-const TRACE_PATHS_KEY = "p";
-const SCREENSHOT_KEY = "s";
-const SHOW_CELL_ID_KEY = "c";
-const SHOW_GOALS_KEY = "g";
-const SHOW_GOAL_VECTORS_KEY = "v";
+const STEP_BACKWARD_KEY = 'ArrowLeft';
+const PLAY_PAUSE_KEY = ' ';
+const STEP_FORWARD_KEY = 'ArrowRight';
+const RESTART_KEY = 'r';
+const LOOP_KEY = 'l';
+const FIT_VIEW_KEY = 'f';
+const SHOW_AGENT_ID_KEY = 'a';
+const STEP_SIZE_UP_KEY = 'ArrowUp';
+const STEP_SIZE_DOWN_KEY = 'ArrowDown';
+const TRACE_PATHS_KEY = 'p';
+const SCREENSHOT_KEY = 's';
+const SHOW_CELL_ID_KEY = 'c';
+const SHOW_GOALS_KEY = 'g';
+const SHOW_GOAL_VECTORS_KEY = 'v';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -53,7 +53,7 @@ interface AnimationControlProps {
     onRestart: () => void;
     stepSize: number;
     onStepSizeChange: (speed: number) => void;
-    loopAnimation: boolean;
+    loopAnimation: boolean,
     onLoopAnimationChange: (loopAnimation: boolean) => void;
     onFitView: () => void;
     showAgentId: boolean;
@@ -71,9 +71,9 @@ interface AnimationControlProps {
 }
 
 function AnimationControl({
-    playAnimation,
-    onPlayAnimationChange,
-    onSkipBackward,
+    playAnimation, 
+    onPlayAnimationChange, 
+    onSkipBackward, 
     onSkipForward,
     onRestart,
     stepSize,
@@ -93,14 +93,14 @@ function AnimationControl({
     setShowGoals,
     showGoalVectors,
     setShowGoalVectors,
-}: AnimationControlProps) {
+}: AnimationControlProps) { 
     const roundAndSetStepSize = (value: number) => {
         onStepSizeChange(Number(value.toFixed(1)));
-    };
-
+    }
+    
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
-        if (typeof value === "number") roundAndSetStepSize(value);
+        if (typeof value === 'number') roundAndSetStepSize(value);
     };
 
     useEffect(() => {
@@ -113,7 +113,7 @@ function AnimationControl({
                 onSkipBackward();
             } else if (event.key === PLAY_PAUSE_KEY) {
                 onPlayAnimationChange(!playAnimation);
-            } else if (event.key === STEP_FORWARD_KEY) {
+            }  else if (event.key === STEP_FORWARD_KEY) {
                 onSkipForward();
             } else if (event.key === RESTART_KEY) {
                 onRestart();
@@ -123,15 +123,9 @@ function AnimationControl({
                 onFitView();
             } else if (event.key === SHOW_AGENT_ID_KEY) {
                 onShowAgentIdChange(!showAgentId);
-            } else if (
-                event.key === STEP_SIZE_UP_KEY &&
-                stepSize + STEP_SIZE_INCREMENT <= STEP_SIZE_MAX
-            ) {
+            } else if (event.key === STEP_SIZE_UP_KEY && stepSize + STEP_SIZE_INCREMENT <= STEP_SIZE_MAX) {
                 roundAndSetStepSize(stepSize + STEP_SIZE_INCREMENT);
-            } else if (
-                event.key === STEP_SIZE_DOWN_KEY &&
-                stepSize - STEP_SIZE_INCREMENT >= STEP_SIZE_MIN
-            ) {
+            } else if (event.key === STEP_SIZE_DOWN_KEY && stepSize - STEP_SIZE_INCREMENT >= STEP_SIZE_MIN) {
                 roundAndSetStepSize(stepSize - STEP_SIZE_INCREMENT);
             } else if (event.key === TRACE_PATHS_KEY) {
                 onTracePathsChange(!tracePaths);
@@ -145,42 +139,24 @@ function AnimationControl({
                 setShowGoalVectors(!showGoalVectors);
             }
         };
-        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener('keydown', handleKeyDown);
         return () => {
-            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [
-        playAnimation,
-        onPlayAnimationChange,
-        loopAnimation,
-        onFitView,
-        onLoopAnimationChange,
-        onRestart,
-        onShowAgentIdChange,
-        onSkipBackward,
-        onSkipForward,
-        onStepSizeChange,
-        showAgentId,
-        stepSize,
-        onTracePathsChange,
-        tracePaths,
-        takeScreenshot,
-        showCellId,
-        setShowCellId,
-        showGoals,
-        setShowGoals,
-        showGoalVectors,
-        setShowGoalVectors,
-    ]);
+    }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, 
+        onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, 
+        onSkipForward, onStepSizeChange, showAgentId, stepSize, onTracePathsChange, tracePaths, 
+        takeScreenshot, showCellId, setShowCellId, showGoals, setShowGoals, showGoalVectors, 
+        setShowGoalVectors]);
 
     return (
         <Stack direction="column" spacing={1}>
             <Stack direction="row" spacing={2} justifyContent="center">
-                <Tooltip
+                <Tooltip 
                     title={
-                        <div style={{ textAlign: "center" }}>
-                            Adjust animation step size ({STEP_SIZE_UP_KEY}/
-                            {STEP_SIZE_DOWN_KEY})
+                        <div style={{ textAlign: 'center' }}>
+                            Adjust animation step size
+                            ({STEP_SIZE_UP_KEY}/{STEP_SIZE_DOWN_KEY})
                         </div>
                     }
                 >
@@ -192,7 +168,7 @@ function AnimationControl({
                         max={STEP_SIZE_MAX}
                         valueLabelDisplay="auto"
                         onChange={handleSliderChange}
-                        sx={{ width: "40%", height: "auto" }}
+                        sx={{ width: '40%', height: "auto"}}
                     />
                 </Tooltip>
                 <Tooltip title="Reset step size">
@@ -206,23 +182,13 @@ function AnimationControl({
                     <Tooltip title={`Backward one step (${STEP_BACKWARD_KEY})`}>
                         <Button onClick={onSkipBackward}>
                             <SkipPreviousIcon />
-                        </Button>
-                    </Tooltip>
-                    <Tooltip
-                        title={
-                            (playAnimation ? "Pause" : "Play") + ` (spacebar)`
-                        }
-                    >
-                        <Button
-                            onClick={() =>
-                                onPlayAnimationChange(!playAnimation)
-                            }
-                        >
-                            {playAnimation ? (
-                                <PauseTwoToneIcon />
-                            ) : (
-                                <PlayArrowIcon />
-                            )}
+                        </Button>   
+                    </Tooltip>    
+                    <Tooltip title={(playAnimation ? "Pause" : "Play") + ` (spacebar)`}>     
+                        <Button onClick={() => onPlayAnimationChange(!playAnimation)}>
+                            {playAnimation ? 
+                            <PauseTwoToneIcon /> : 
+                            <PlayArrowIcon />}
                         </Button>
                     </Tooltip>
                     <Tooltip title={`Forward one step (${STEP_FORWARD_KEY})`}>
@@ -239,18 +205,11 @@ function AnimationControl({
                             <StartIcon />
                         </Button>
                     </Tooltip>
-                    <Tooltip
-                        title={
-                            (loopAnimation ? "Disable loop" : "Enable loop") +
-                            ` (${LOOP_KEY})`
-                        }
-                    >
-                        <Button
-                            onClick={() =>
-                                onLoopAnimationChange(!loopAnimation)
-                            }
-                        >
-                            {loopAnimation ? <RepeatOnIcon /> : <RepeatIcon />}
+                    <Tooltip title={(loopAnimation ? "Disable loop" : "Enable loop") + ` (${LOOP_KEY})`}>
+                        <Button onClick={() => onLoopAnimationChange(!loopAnimation)}>
+                            {loopAnimation ? 
+                            <RepeatOnIcon /> : 
+                            <RepeatIcon />}
                         </Button>
                     </Tooltip>
                     <Tooltip title={`Reset view (${FIT_VIEW_KEY})`}>
@@ -260,10 +219,7 @@ function AnimationControl({
                     </Tooltip>
                     <Tooltip title={"Take screenshot" + ` (${SCREENSHOT_KEY})`}>
                         <span>
-                            <Button
-                                disabled={!canScreenshot}
-                                onClick={takeScreenshot}
-                            >
+                            <Button disabled={!canScreenshot} onClick={takeScreenshot}>
                                 <ScreenshotMonitorOutlinedIcon />
                             </Button>
                         </span>
@@ -272,82 +228,45 @@ function AnimationControl({
             </Box>
             <Box display="flex" justifyContent="center">
                 <ButtonGroup size="large" variant="outlined">
-                    <Tooltip
-                        title={
-                            (showAgentId ? "Hide agent ID" : "Show agent ID") +
-                            ` (${SHOW_AGENT_ID_KEY})`
-                        }
-                    >
-                        <Button
-                            onClick={() => onShowAgentIdChange(!showAgentId)}
-                        >
-                            {showAgentId ? (
-                                <SmartToyIcon />
-                            ) : (
-                                <SmartToyOutlinedIcon />
-                            )}
+                    <Tooltip title={(showAgentId ? "Hide agent ID" : "Show agent ID") + ` (${SHOW_AGENT_ID_KEY})`}>
+                        <Button onClick={() => onShowAgentIdChange(!showAgentId)}>
+                            {showAgentId ?
+                            <SmartToyIcon />:
+                            <SmartToyOutlinedIcon />}
                         </Button>
                     </Tooltip>
-                    <Tooltip
-                        title={
-                            (showCellId ? "Hide cell ID" : "Show cell ID") +
-                            ` (${SHOW_CELL_ID_KEY})`
-                        }
-                    >
+                    <Tooltip title={(showCellId ? "Hide cell ID" : "Show cell ID") + ` (${SHOW_CELL_ID_KEY})`}>
                         <Button onClick={() => setShowCellId(!showCellId)}>
-                            {showCellId ? (
-                                <LooksOneIcon />
-                            ) : (
-                                <LooksOneOutlinedIcon />
-                            )}
+                            {showCellId ?
+                            <LooksOneIcon />:
+                            <LooksOneOutlinedIcon />}
                         </Button>
                     </Tooltip>
-                    <Tooltip
-                        title={
-                            (tracePaths ? "Hide paths" : "Show paths") +
-                            ` (${TRACE_PATHS_KEY})`
-                        }
-                    >
+                    <Tooltip title={(tracePaths ? "Hide paths" : "Show paths") + ` (${TRACE_PATHS_KEY})`}>
                         <Button onClick={() => onTracePathsChange(!tracePaths)}>
-                            {tracePaths ? (
-                                <DirectionsIcon />
-                            ) : (
-                                <DirectionsOutlinedIcon />
-                            )}
+                            {tracePaths ?
+                            <DirectionsIcon />:
+                            <DirectionsOutlinedIcon />}
                         </Button>
                     </Tooltip>
-                    <Tooltip
-                        title={
-                            (showGoals ? "Hide goals" : "Show goals") +
-                            ` (${SHOW_GOALS_KEY})`
-                        }
-                    >
+                    <Tooltip title={(showGoals ? "Hide goals" : "Show goals") + ` (${SHOW_GOALS_KEY})`}>
                         <Button onClick={() => setShowGoals(!showGoals)}>
-                            {showGoals ? <FlagIcon /> : <OutlinedFlagIcon />}
+                            {showGoals ?
+                            <FlagIcon />:
+                            <OutlinedFlagIcon />}
                         </Button>
                     </Tooltip>
-                    <Tooltip
-                        title={
-                            (showGoalVectors
-                                ? "Hide goal vectors"
-                                : "Show goal vectors") +
-                            ` (${SHOW_GOAL_VECTORS_KEY})`
-                        }
-                    >
-                        <Button
-                            onClick={() => setShowGoalVectors(!showGoalVectors)}
-                        >
-                            {showGoalVectors ? (
-                                <PolylineIcon />
-                            ) : (
-                                <PolylineOutlinedIcon />
-                            )}
+                    <Tooltip title={(showGoalVectors ? "Hide goal vectors" : "Show goal vectors") + ` (${SHOW_GOAL_VECTORS_KEY})`}>
+                        <Button onClick={() => setShowGoalVectors(!showGoalVectors)}>
+                            {showGoalVectors ?
+                            <PolylineIcon />:
+                            <PolylineOutlinedIcon />}
                         </Button>
                     </Tooltip>
                 </ButtonGroup>
             </Box>
         </Stack>
-    );
+    );   
 }
 
 export default AnimationControl;
