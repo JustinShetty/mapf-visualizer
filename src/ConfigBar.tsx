@@ -1,12 +1,12 @@
-import AnimationControl from "./AnimationControl";
-import { Graph } from "./Graph";
-import { parseSolution, Solution } from "./Solution";
-import { Divider, Stack, Button } from "@mui/material";
+import AnimationControl from './AnimationControl';
+import { Graph } from './Graph';
+import { parseSolution, Solution } from './Solution';
+import { Divider, Stack, Button } from '@mui/material';
 import { MuiFileInput } from "mui-file-input";
-import React, { useEffect } from "react";
-import ClearIcon from "@mui/icons-material/Clear";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import Tooltip from "@mui/material/Tooltip";
+import React, { useEffect } from 'react';
+import ClearIcon from '@mui/icons-material/Clear';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import Tooltip from '@mui/material/Tooltip';
 
 interface ConfigBarProps {
   graph: Graph | null;
@@ -19,7 +19,7 @@ interface ConfigBarProps {
   onRestart: () => void;
   stepSize: number;
   onStepSizeChange: (speed: number) => void;
-  loopAnimation: boolean;
+  loopAnimation: boolean,
   onLoopAnimationChange: (loopAnimation: boolean) => void;
   onFitView: () => void;
   showAgentId: boolean;
@@ -39,7 +39,7 @@ interface ConfigBarProps {
 function ConfigBar({
   graph,
   onGraphChange,
-  onSolutionChange,
+  onSolutionChange, 
   playAnimation,
   onPlayAnimationChange,
   onSkipBackward,
@@ -74,7 +74,7 @@ function ConfigBar({
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
-  };
+  }
 
   const handleLoadDemo = (mapName: string) => {
     fetch(`${import.meta.env.BASE_URL}/${mapName}.map`)
@@ -101,9 +101,7 @@ function ConfigBar({
       } catch (e) {
         setMapFile(null);
         onGraphChange(null);
-        setMapError(
-          e instanceof Error ? e.message : "An unexpected error occurred"
-        );
+        setMapError(e instanceof Error ? e.message : "An unexpected error occurred");
       }
     });
   }, [mapFile, onGraphChange]);
@@ -111,22 +109,16 @@ function ConfigBar({
   useEffect(() => {
     if (solutionFile === null) {
       onSolutionChange(null);
-      return;
+      return
     }
     solutionFile.text().then((text) => {
       try {
-        if (graph === null)
-          throw new Error("Map must be loaded before solution");
+        if (graph === null) throw new Error("Map must be loaded before solution");
         const soln = parseSolution(text);
         soln.forEach((config) => {
           config.forEach((pose) => {
-            if (
-              pose.position.x > graph.width ||
-              pose.position.y > graph.height
-            ) {
-              throw new Error(
-                `Invalid solution: position ${pose.position} is out of bounds`
-              );
+            if (pose.position.x > graph.width || pose.position.y > graph.height) {
+              throw new Error(`Invalid solution: position ${pose.position} is out of bounds`);
             }
           });
         });
@@ -134,9 +126,7 @@ function ConfigBar({
         setSolutionError(null);
       } catch (e) {
         setSolutionFile(null);
-        setSolutionError(
-          e instanceof Error ? e.message : "An unexpected error occurred"
-        );
+        setSolutionError(e instanceof Error ? e.message : "An unexpected error occurred");
       }
     });
   }, [graph, solutionFile, onSolutionChange]);
@@ -154,86 +144,71 @@ function ConfigBar({
 
   const downloadFile = (file: File) => {
     const url = URL.createObjectURL(file);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = file.name;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  };
+  }
 
   return (
-    <Stack direction="column" spacing={1} sx={{ padding: 2 }}>
+    <Stack direction="column" spacing={1} sx={{padding: 2}} >
       <Stack direction="column" spacing={1}>
-        <Button variant="outlined" onClick={() => handleLoadDemo("2x2")}>
-          Load 2x2 demo
-        </Button>
-        <Button
-          variant="outlined"
-          onClick={() => handleLoadDemo("random-32-32-20")}
-        >
-          Load 32x32 demo
-        </Button>
+        <Button variant="outlined" onClick={() => handleLoadDemo("2x2")}>Load 2x2 demo</Button>
+        <Button variant="outlined" onClick={() => handleLoadDemo("random-32-32-20")}>Load 32x32 demo</Button>
       </Stack>
       <Divider />
       <Stack direction="column" spacing={1}>
         <h1>Map</h1>
         <Stack direction="row" spacing={1}>
           <MuiFileInput
-            value={mapFile}
-            onChange={handleMapChange}
-            placeholder="Select a map file"
-            sx={{ width: "100%" }}
-            clearIconButtonProps={{
-              title: "Clear",
-              children: <ClearIcon fontSize="small" />,
-            }}
+              value={mapFile}
+              onChange={handleMapChange}
+              placeholder="Select a map file"
+              sx={{width: '100%'}}
+              clearIconButtonProps={{
+                title: "Clear",
+                children: <ClearIcon fontSize="small" />
+              }}
           />
-          {mapFile && (
+          {mapFile &&
             <Tooltip title={`Download ${mapFile?.name}`}>
-              <Button
-                onClick={() => {
-                  downloadFile(mapFile as File);
-                }}
-              >
+              <Button onClick={() => {downloadFile(mapFile as File)}}>
                 <FileDownloadOutlinedIcon />
               </Button>
             </Tooltip>
-          )}
+          }
         </Stack>
-        {mapError && <p style={{ color: "red" }}>{mapError}</p>}
+        {mapError && <p style={{color: 'red'}}>{mapError}</p>}
       </Stack>
       <Divider />
       <Stack direction="column" spacing={2}>
-        <h1>Solution</h1>
-        <Stack direction="row" spacing={1}>
-          <MuiFileInput
-            value={solutionFile}
-            onChange={handleSolutionChange}
-            placeholder="Select a solution file"
-            sx={{ width: "100%" }}
-            clearIconButtonProps={{
-              title: "Clear",
-              children: <ClearIcon fontSize="small" />,
-            }}
-          />
-          {solutionFile && (
-            <Tooltip title={`Download ${solutionFile?.name}`}>
-              <Button
-                onClick={() => {
-                  downloadFile(solutionFile as File);
+          <h1>Solution</h1>
+          <Stack direction="row" spacing={1}>
+            <MuiFileInput
+                value={solutionFile}
+                onChange={handleSolutionChange}
+                placeholder="Select a solution file"
+                sx={{width: '100%'}}
+                clearIconButtonProps={{
+                  title: "Clear",
+                  children: <ClearIcon fontSize="small" />
                 }}
-              >
-                <FileDownloadOutlinedIcon />
-              </Button>
-            </Tooltip>
-          )}
-        </Stack>
-        {solutionError && <p style={{ color: "red" }}>{solutionError}</p>}
+            />
+            {solutionFile &&
+              <Tooltip title={`Download ${solutionFile?.name}`}>
+                <Button onClick={() => {downloadFile(solutionFile as File)}}>
+                  <FileDownloadOutlinedIcon />
+                </Button>
+              </Tooltip>
+            }
+          </Stack>
+          {solutionError && <p style={{color: 'red'}}>{solutionError}</p>}
       </Stack>
       <Divider />
-      <AnimationControl
+      <AnimationControl 
         playAnimation={playAnimation}
         onPlayAnimationChange={onPlayAnimationChange}
         onSkipBackward={onSkipBackward}
@@ -257,12 +232,8 @@ function ConfigBar({
         showGoalVectors={showGoalVectors}
         setShowGoalVectors={setShowGoalVectors}
       />
-      <Divider />
-      <a
-        target="_blank"
-        href={`https://github.com/${repoName}`}
-        style={{ color: "white", width: "fit-content" }}
-      >
+    <Divider />
+      <a target="_blank" href={`https://github.com/${repoName}`} style={{ color: 'white', width: 'fit-content' }}>
         {repoName}
       </a>
     </Stack>

@@ -2,7 +2,7 @@ export class Coordinate {
     public x: number = 0;
     public y: number = 0;
 
-    constructor(x: number, y: number) {
+    constructor (x: number, y: number) {
         this.x = x;
         this.y = y;
     }
@@ -22,13 +22,13 @@ export class Graph {
     }
 
     private parseGraph(fileContent: string) {
-        const lines = fileContent.trim().split("\n");
+        const lines = fileContent.trim().split('\n');
         if (lines.length < 4) {
-            throw new Error("Invalid map file");
+            throw new Error('Invalid map file');
         }
         const height = Number(lines[1].split(" ")[1]);
         if (height !== lines.length - 4) {
-            throw new Error("Invalid map file, check height");
+            throw new Error('Invalid map file, check height');
         }
         this.height = height;
         const width = Number(lines[2].split(" ")[1]);
@@ -36,11 +36,11 @@ export class Graph {
         const graph = lines.slice(4);
         for (let y = 0; y < graph.length; y++) {
             if (graph[y].length !== width) {
-                throw new Error("Invalid map file, check width");
+                throw new Error('Invalid map file, check width');
             }
             for (let x = 0; x < this.width; x++) {
-                if (graph[y][x] !== ".") {
-                    this.obstacles.set(new Coordinate(x, y).toString(), true);
+                if (graph[y][x] !== '.') {
+                    this.obstacles.set((new Coordinate(x, y)).toString(), true);
                 }
             }
         }
