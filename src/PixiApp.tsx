@@ -1,8 +1,9 @@
+
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react';
 import * as PIXI from 'pixi.js';
 import { Viewport } from 'pixi-viewport';
 import { Graph } from './Graph';
-import { Solution, Orientation, orientationToRotation } from './Solution';
+import { Solution, Orientation, orientationToRotation, AgentState } from './Solution';
 import { Coordinate } from './Graph';
 import { BACKGROUND_COLOR, GRID_COLOR, TEXT_COLOR, AGENT_COLORS } from './Params';
 
@@ -59,6 +60,8 @@ const PixiApp = forwardRef(({
     const showAgentIdRef = useRef(showAgentId);
     const tickerCallbackRef = useRef<() => void>(() => {});
     const agentsRef = useRef<PIXI.Container | null>(null);
+    const pickingMarkersRef = useRef<PIXI.Container>(new PIXI.Container());
+    const deliveredMarkersRef = useRef<PIXI.Container>(new PIXI.Container());
     const agentPathsRef = useRef<{ full: PIXI.Container, partial: PIXI.Container }>({
         full: new PIXI.Container(),
         partial: new PIXI.Container()
@@ -160,6 +163,67 @@ const PixiApp = forwardRef(({
         }); 
     }, [solution]);
 
+    const updateStateMarkers = useCallback(() => {
+        if (!solution) return;
+
+        const currentTimestep = Math.floor(timestepRef.current);
+        pickingMarkersRef.current.removeChildren();
+        deliveredMarkersRef.current.removeChildren();
+
+        solution[0].forEach((_pose, agentId) => {
+            let lastPickingPose: (typeof solution)[0][0] | null = null;
+            let deliveredPose: (typeof solution)[0][0] | null = null;
+
+            for (let t = currentTimestep + 1; t < solution.length; t++) {
+                const pose = solution[t][agentId];
+                if (pose.state === AgentState.NONE) {
+                    deliveredPose = solution[solution.length - 1][agentId];
+                    break;
+                }
+                if (pose.state === AgentState.IDLE) {
+                    break;
+                }
+
+                if (pose.state === AgentState.PICKING) {
+                    lastPickingPose = pose;
+                    continue;
+                }
+
+            if (!deliveredPose && pose.state === AgentState.DELIVERED) {
+                    deliveredPose = pose;
+                    break;
+                }
+            }
+
+            if (lastPickingPose) {
+                const marker = new PIXI.Graphics();
+                const r = GRID_UNIT_TO_PX / 5;
+                marker
+                    .circle(
+                        scalePosition(lastPickingPose.position.x),
+                        scalePosition(lastPickingPose.position.y),
+                        r
+                    )
+                    .fill(AGENT_COLORS[agentId % AGENT_COLORS.length]);
+                pickingMarkersRef.current.addChild(marker);
+            }
+
+            if (deliveredPose) {
+                const marker = new PIXI.Graphics();
+                const size = GRID_UNIT_TO_PX / 4;
+                marker
+                    .rect(
+                        scalePosition(deliveredPose.position.x) - size / 2,
+                        scalePosition(deliveredPose.position.y) - size / 2,
+                        size,
+                        size
+                    )
+                    .fill(AGENT_COLORS[agentId % AGENT_COLORS.length]);
+                deliveredMarkersRef.current.addChild(marker);
+            }
+        });
+    }, [solution])
+
     const updatePaths = useCallback((agents: PIXI.Container[], currentTime: number) => {
         if (!solution) return;
 
@@ -221,21 +285,33 @@ const PixiApp = forwardRef(({
 
     const updateGoalVectors = useCallback((agents: PIXI.Container[]) => {
         if (!solution) return;
+        const currentTimestep = Math.floor(timestepRef.current);
         agents.forEach((agent, index) => {
-            const goal =  solution[solution.length - 1][index];
             const goalVector = goalVectorsRef.current.children[index] as PIXI.Graphics;
-            goalVector.clear()
+            let goalPose = null;
+            for (let t = currentTimestep + 1; t < solution.length; t++) {
+                const pose = solution[t][index];
+                if (pose.state === AgentState.DELIVERED) {
+                goalPose = pose;
+                break;
+                }
+            }
+
+            goalVector.clear();
+            if (goalPose) {
+                goalVector
                 .moveTo(agent.x, agent.y)
                 .lineTo(
-                    scalePosition(goal.position.x),
-                    scalePosition(goal.position.y)
+                    scalePosition(goalPose.position.x),
+                    scalePosition(goalPose.position.y)
                 )
                 .stroke({
-                    color: AGENT_COLORS[index % AGENT_COLORS.length], 
+                    color: AGENT_COLORS[index % AGENT_COLORS.length],
                     width: Math.max(1, GRID_UNIT_TO_PX / 25),
-                    cap: "round" as const
+                    cap: "round" as const,
                 });
-        });
+            }
+            });
     }, [solution]);
 
     // Animate the solution
@@ -258,17 +334,9 @@ const PixiApp = forwardRef(({
         // Check if the solution is orientation-aware
         const orientationAware: boolean = solution[0][0].orientation !== Orientation.NONE;
 
-        // Goal markers
-        const goalMarkers = viewport.addChild(goalMarkersRef.current);
-        solution[solution.length - 1].forEach((pose, agentId) => {
-            const marker = goalMarkers.addChild(new PIXI.Graphics());
-            const width = GRID_UNIT_TO_PX / 4;
-            marker.rect(
-                scalePosition(pose.position.x) - width / 2,
-                scalePosition(pose.position.y) - width / 2,
-                width, width)
-            .fill(AGENT_COLORS[agentId % AGENT_COLORS.length]);
-        });
+        // Picking markers
+        viewport.addChild(pickingMarkersRef.current);
+        viewport.addChild(deliveredMarkersRef.current);
 
         // Paths
         viewport.addChild(agentPathsRef.current.full);
@@ -334,6 +402,7 @@ const PixiApp = forwardRef(({
             moveAndRotateSprites(agents.children as PIXI.Container[], timestepRef.current);
             updatePaths(agents.children as PIXI.Container[], timestepRef.current);
             updateGoalVectors(agents.children as PIXI.Container[]);
+            updateStateMarkers();
         }
         app.ticker.add(animate);
         tickerCallbackRef.current = animate;
