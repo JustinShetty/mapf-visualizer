@@ -8,10 +8,10 @@ import React, { useCallback } from 'react';
 import { StrictMode, useRef } from 'react';
 
 function App() {
-  const pixiAppRef = useRef<{ 
-    skipBackward?: () => void; 
-    skipForward?: () => void; 
-    restart?: () => void; 
+  const pixiAppRef = useRef<{
+    skipBackward?: () => void;
+    skipForward?: () => void;
+    restart?: () => void;
     fit?: () => void;
     takeScreenshot?: () => void;
   }>(null);
@@ -65,8 +65,8 @@ function App() {
         <Grid size="grow">
           <Visualizer
             pixiAppRef = {pixiAppRef}
-            graph={graph} 
-            solution={solution} 
+            graph={graph}
+            solution={solution}
             playAnimation={playAnimation}
             stepSize={stepSize}
             loopAnimation={loopAnimation}

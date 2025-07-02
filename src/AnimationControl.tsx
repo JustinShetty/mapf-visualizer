@@ -71,9 +71,9 @@ interface AnimationControlProps {
 }
 
 function AnimationControl({
-    playAnimation, 
-    onPlayAnimationChange, 
-    onSkipBackward, 
+    playAnimation,
+    onPlayAnimationChange,
+    onSkipBackward,
     onSkipForward,
     onRestart,
     stepSize,
@@ -93,11 +93,11 @@ function AnimationControl({
     setShowGoals,
     showGoalVectors,
     setShowGoalVectors,
-}: AnimationControlProps) { 
+}: AnimationControlProps) {
     const roundAndSetStepSize = (value: number) => {
         onStepSizeChange(Number(value.toFixed(1)));
     }
-    
+
     const handleSliderChange = (event: Event, value: number | number[]) => {
         event.preventDefault();
         if (typeof value === 'number') roundAndSetStepSize(value);
@@ -143,16 +143,16 @@ function AnimationControl({
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView, 
-        onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward, 
-        onSkipForward, onStepSizeChange, showAgentId, stepSize, onTracePathsChange, tracePaths, 
-        takeScreenshot, showCellId, setShowCellId, showGoals, setShowGoals, showGoalVectors, 
+    }, [playAnimation, onPlayAnimationChange, loopAnimation, onFitView,
+        onLoopAnimationChange, onRestart, onShowAgentIdChange, onSkipBackward,
+        onSkipForward, onStepSizeChange, showAgentId, stepSize, onTracePathsChange, tracePaths,
+        takeScreenshot, showCellId, setShowCellId, showGoals, setShowGoals, showGoalVectors,
         setShowGoalVectors]);
 
     return (
         <Stack direction="column" spacing={1}>
             <Stack direction="row" spacing={2} justifyContent="center">
-                <Tooltip 
+                <Tooltip
                     title={
                         <div style={{ textAlign: 'center' }}>
                             Adjust animation step size
@@ -182,12 +182,12 @@ function AnimationControl({
                     <Tooltip title={`Backward one step (${STEP_BACKWARD_KEY})`}>
                         <Button onClick={onSkipBackward}>
                             <SkipPreviousIcon />
-                        </Button>   
-                    </Tooltip>    
-                    <Tooltip title={(playAnimation ? "Pause" : "Play") + ` (spacebar)`}>     
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title={(playAnimation ? "Pause" : "Play") + ` (spacebar)`}>
                         <Button onClick={() => onPlayAnimationChange(!playAnimation)}>
-                            {playAnimation ? 
-                            <PauseTwoToneIcon /> : 
+                            {playAnimation ?
+                            <PauseTwoToneIcon /> :
                             <PlayArrowIcon />}
                         </Button>
                     </Tooltip>
@@ -207,8 +207,8 @@ function AnimationControl({
                     </Tooltip>
                     <Tooltip title={(loopAnimation ? "Disable loop" : "Enable loop") + ` (${LOOP_KEY})`}>
                         <Button onClick={() => onLoopAnimationChange(!loopAnimation)}>
-                            {loopAnimation ? 
-                            <RepeatOnIcon /> : 
+                            {loopAnimation ?
+                            <RepeatOnIcon /> :
                             <RepeatIcon />}
                         </Button>
                     </Tooltip>
@@ -266,7 +266,7 @@ function AnimationControl({
                 </ButtonGroup>
             </Box>
         </Stack>
-    );   
+    );
 }
 
 export default AnimationControl;

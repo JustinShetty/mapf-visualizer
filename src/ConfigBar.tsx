@@ -39,7 +39,7 @@ interface ConfigBarProps {
 function ConfigBar({
   graph,
   onGraphChange,
-  onSolutionChange, 
+  onSolutionChange,
   playAnimation,
   onPlayAnimationChange,
   onSkipBackward,
@@ -208,7 +208,7 @@ function ConfigBar({
           {solutionError && <p style={{color: 'red'}}>{solutionError}</p>}
       </Stack>
       <Divider />
-      <AnimationControl 
+      <AnimationControl
         playAnimation={playAnimation}
         onPlayAnimationChange={onPlayAnimationChange}
         onSkipBackward={onSkipBackward}

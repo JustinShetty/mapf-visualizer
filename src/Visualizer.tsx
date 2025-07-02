@@ -20,9 +20,9 @@ interface VisualizerProps {
 }
 
 function Visualizer({
-  graph, 
-  solution, 
-  playAnimation, 
+  graph,
+  solution,
+  playAnimation,
   pixiAppRef,
   stepSize,
   loopAnimation,
@@ -40,9 +40,9 @@ function Visualizer({
   useEffect(() => {
     const handleResize = () => {
       if (boxRef.current && canvasRef.current) {
-        setViewportSize({ 
-          width: boxRef.current.clientWidth, 
-          height: window.innerHeight - canvasRef.current.getBoundingClientRect().top 
+        setViewportSize({
+          width: boxRef.current.clientWidth,
+          height: window.innerHeight - canvasRef.current.getBoundingClientRect().top
         });
       }
     };
@@ -54,10 +54,10 @@ function Visualizer({
   return (
     <Box width="100%" height="100%" ref={boxRef}>
       <div ref={canvasRef}>
-      {viewportSize !== null && 
-        <PixiApp 
+      {viewportSize !== null &&
+        <PixiApp
           ref={pixiAppRef}
-          width={viewportSize.width} 
+          width={viewportSize.width}
           height={viewportSize.height}
           graph={graph}
           solution={solution}

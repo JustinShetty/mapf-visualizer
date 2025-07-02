@@ -25,11 +25,11 @@ interface PixiAppProps {
     showGoalVectors: boolean,
 }
 
-const PixiApp = forwardRef(({ 
-    width, 
-    height, 
-    graph, 
-    solution, 
+const PixiApp = forwardRef(({
+    width,
+    height,
+    graph,
+    solution,
     playAnimation,
     stepSize,
     loopAnimation,
@@ -42,7 +42,7 @@ const PixiApp = forwardRef(({
 }: PixiAppProps, ref) => {
     // this is a mess of state and refs, but how I got everything to work...
     // maybe someday I will clean this up or maybe someone who knows React better than me can help
-    // 
+    //
     // the variables that are used inside the animation callbacks must
     // be stored in refs because the callbacks are created "once" and
     // the variables are updated outside of the callbacks
@@ -51,7 +51,7 @@ const PixiApp = forwardRef(({
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [grid, setGrid] = useState<PIXI.Container | null>(null);
     const playAnimationRef = useRef(playAnimation);
-    const timestepRef = useRef(0.0); 
+    const timestepRef = useRef(0.0);
     const stepSizeRef = useRef(1.0);
     const loopAnimationRef = useRef(loopAnimation);
     const hudRef = useRef<PIXI.Container | null>(null);
@@ -140,7 +140,7 @@ const PixiApp = forwardRef(({
             agent.x =
                 startPose.position.x +
                 (endPose.position.x - startPose.position.x) * interpolationProgress;
-            agent.y = 
+            agent.y =
                 startPose.position.y +
                 (endPose.position.y - startPose.position.y) * interpolationProgress;
             agent.x = scalePosition(agent.x);
@@ -157,7 +157,7 @@ const PixiApp = forwardRef(({
             circleContainer.rotation =
                 startRotation +
                 (endRotation - startRotation) * interpolationProgress;
-        }); 
+        });
     }, [solution]);
 
     const updatePaths = useCallback((agents: PIXI.Container[], currentTime: number) => {
@@ -166,11 +166,11 @@ const PixiApp = forwardRef(({
         const currentTimestep = Math.floor(currentTime);
         const interpolationProgress = currentTime - currentTimestep;
 
-        
+
         agents.forEach((_agent, index) => {
-            const agentLineStyle = { 
-                width: GRID_UNIT_TO_PX / 10, 
-                color: AGENT_COLORS[index % AGENT_COLORS.length], 
+            const agentLineStyle = {
+                width: GRID_UNIT_TO_PX / 10,
+                color: AGENT_COLORS[index % AGENT_COLORS.length],
                 cap: "round" as const
             };
 
@@ -231,7 +231,7 @@ const PixiApp = forwardRef(({
                     scalePosition(goal.position.y)
                 )
                 .stroke({
-                    color: AGENT_COLORS[index % AGENT_COLORS.length], 
+                    color: AGENT_COLORS[index % AGENT_COLORS.length],
                     width: Math.max(1, GRID_UNIT_TO_PX / 25),
                     cap: "round" as const
                 });
@@ -254,7 +254,7 @@ const PixiApp = forwardRef(({
         }
         if (solution === null) return;
         resetTimestep();
-    
+
         // Check if the solution is orientation-aware
         const orientationAware: boolean = solution[0][0].orientation !== Orientation.NONE;
 
@@ -316,7 +316,7 @@ const PixiApp = forwardRef(({
             idText.x = -idText.width / 2;
             idText.y = -idText.height / 2;
         });
-    
+
         const animate = () => {
             if(timestepTextRef.current) {
                 timestepTextRef.current.text = `${timestepRef.current.toFixed(1)} / ${(solution.length - 1).toFixed(1)}`;
@@ -345,10 +345,10 @@ const PixiApp = forwardRef(({
             const canvas = canvasRef.current;
             if (canvas) {
                 const pixiApp = new PIXI.Application();
-                pixiApp.init({ 
-                    width: width, 
-                    height: height, 
-                    canvas: canvas, 
+                pixiApp.init({
+                    width: width,
+                    height: height,
+                    canvas: canvas,
                     background: BACKGROUND_COLOR,
                     antialias: true,  // for smooooooth circles
                 }).then(() => {
@@ -377,7 +377,7 @@ const PixiApp = forwardRef(({
                         fontFamily: "Arial",
                         fontWeight: "bold",
                         stroke: {
-                            color: BACKGROUND_COLOR, 
+                            color: BACKGROUND_COLOR,
                             width: 4
                         },
                     });
@@ -408,7 +408,7 @@ const PixiApp = forwardRef(({
     const drawGrid = useCallback(() => {
         if (viewport === null || graph === null) return null;
         const grid = viewport.addChild(new PIXI.Container());
-    
+
         for (let x: number = 0; x < graph.width; x++) {
             for (let y: number = 0; y < graph.height; y++) {
                 const cellContainer = grid.addChild(new PIXI.Container());
@@ -435,7 +435,7 @@ const PixiApp = forwardRef(({
                 idText.y = cellY + strokeWidth;
             }
         }
-    
+
         viewport.worldHeight = grid.height * 1.2;
         viewport.worldWidth = grid.width * 1.2;
         return grid;

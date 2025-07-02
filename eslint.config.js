@@ -23,6 +23,13 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      'eol-last': [
+        'error', 
+        'always',
+      ],
+      'no-trailing-spaces': [
+        'error',
+      ],
     },
   },
 )
