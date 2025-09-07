@@ -7,6 +7,10 @@ This repository hosts the web-based version of the MAPF (Multi-Agent Pathfinding
 
 This project runs entirely client-side and is built using [React](https://reactjs.org/) and [PixiJS](https://pixijs.com/).
 
+## Try it now!
+
+[https://justinshetty.github.io/mapf-visualizer/](https://justinshetty.github.io/mapf-visualizer/)
+
 ## Features
 
 - **Browser-Based Interface**: No installation required, simply access the app through the GitHub Pages site.
