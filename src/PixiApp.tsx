@@ -372,7 +372,7 @@ const PixiApp = forwardRef(({
                     app.stage.addChild(viewport);
                     hudRef.current = app.stage.addChild(new PIXI.Container());
                     const textStyle = new PIXI.TextStyle({
-                        fontSize: 24,
+                        fontSize: 24 * FONT_SUPER_RESOLUTION_SCALE,
                         fill: TEXT_COLOR,
                         fontFamily: "Arial",
                         fontWeight: "bold",
@@ -387,16 +387,7 @@ const PixiApp = forwardRef(({
                             y: height / 100,
                             anchor: new PIXI.Point(0, 0),
                             style: textStyle,
-                        })
-                    );
-
-                    hudRef.current.addChild(
-                        new PIXI.Text({
-                            x: width - width / 100,
-                            y: height / 100,
-                            anchor: new PIXI.Point(1, 0),
-                            text: "Click and drag to pan. Scroll to zoom.",
-                            style: textStyle,
+                            scale: {x: 1 / FONT_SUPER_RESOLUTION_SCALE, y: 1 / FONT_SUPER_RESOLUTION_SCALE}
                         })
                     );
                 }
@@ -450,8 +441,6 @@ const PixiApp = forwardRef(({
             if (hudRef.current) {
                 hudRef.current.children[0].x = width / 100;
                 hudRef.current.children[0].y = height / 100;
-                hudRef.current.children[1].x = width - width / 100;
-                hudRef.current.children[1].y = height / 100;
             }
             fit();
         }

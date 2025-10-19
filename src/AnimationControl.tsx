@@ -180,9 +180,20 @@ function AnimationControl({
             py: 1.5,
         }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
-                <Box sx={{ width: 48 }} />
+                <Box>
+                    Drag to pan, scroll to zoom.
+                </Box>
 
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    sx={{
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                    }}
+                >
                     <Tooltip title="Previous step (🡐)">
                         <IconButton
                             onClick={onSkipBackward}
