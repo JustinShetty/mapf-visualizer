@@ -8,25 +8,11 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect } from 'react';
+import { KeyMap } from './Params';
 
 const STEP_SIZE_INCREMENT = 0.2;
 const STEP_SIZE_MAX = 10;
 const STEP_SIZE_MIN = 0.2;
-
-const STEP_BACKWARD_KEY = 'ArrowLeft';
-const PLAY_PAUSE_KEY = ' ';
-const STEP_FORWARD_KEY = 'ArrowRight';
-const RESTART_KEY = 'r';
-const LOOP_KEY = 'l';
-const FIT_VIEW_KEY = 'f';
-const SHOW_AGENT_ID_KEY = 'a';
-const STEP_SIZE_UP_KEY = 'ArrowUp';
-const STEP_SIZE_DOWN_KEY = 'ArrowDown';
-const TRACE_PATHS_KEY = 'p';
-const SCREENSHOT_KEY = 's';
-const SHOW_CELL_ID_KEY = 'c';
-const SHOW_GOALS_KEY = 'g';
-const SHOW_GOAL_VECTORS_KEY = 'v';
 
 interface AnimationControlProps {
     playAnimation: boolean;
@@ -90,50 +76,50 @@ function AnimationControl({
             }
 
             switch (event.key) {
-                case STEP_BACKWARD_KEY:
+                case KeyMap.STEP_BACKWARD_KEY:
                     onSkipBackward();
                     break;
-                case PLAY_PAUSE_KEY:
+                case KeyMap.PLAY_PAUSE_KEY:
                     onPlayChange(!playAnimation);
                     break;
-                case STEP_FORWARD_KEY:
+                case KeyMap.STEP_FORWARD_KEY:
                     onSkipForward();
                     break;
-                case RESTART_KEY:
+                case KeyMap.RESTART_KEY:
                     onRestart();
                     break;
-                case LOOP_KEY:
+                case KeyMap.LOOP_KEY:
                     onLoopAnimationChange(!loopAnimation);
                     break;
-                case FIT_VIEW_KEY:
+                case KeyMap.FIT_VIEW_KEY:
                     onFitView();
                     break;
-                case SHOW_AGENT_ID_KEY:
+                case KeyMap.SHOW_AGENT_ID_KEY:
                     onShowAgentIdChange(!showAgentId);
                     break;
-                case STEP_SIZE_UP_KEY:
+                case KeyMap.STEP_SIZE_UP_KEY:
                     if (stepSize + STEP_SIZE_INCREMENT <= STEP_SIZE_MAX) {
                         roundAndSetStepSize(stepSize + STEP_SIZE_INCREMENT);
                     }
                     break;
-                case STEP_SIZE_DOWN_KEY:
+                case KeyMap.STEP_SIZE_DOWN_KEY:
                     if (stepSize - STEP_SIZE_INCREMENT >= STEP_SIZE_MIN) {
                         roundAndSetStepSize(stepSize - STEP_SIZE_INCREMENT);
                     }
                     break;
-                case TRACE_PATHS_KEY:
+                case KeyMap.TRACE_PATHS_KEY:
                     onTracePathsChange(!tracePaths);
                     break;
-                case SCREENSHOT_KEY:
+                case KeyMap.SCREENSHOT_KEY:
                     takeScreenshot();
                     break;
-                case SHOW_CELL_ID_KEY:
+                case KeyMap.SHOW_CELL_ID_KEY:
                     setShowCellId(!showCellId);
                     break;
-                case SHOW_GOALS_KEY:
+                case KeyMap.SHOW_GOALS_KEY:
                     setShowGoals(!showGoals);
                     break;
-                case SHOW_GOAL_VECTORS_KEY:
+                case KeyMap.SHOW_GOAL_VECTORS_KEY:
                     setShowGoalVectors(!showGoalVectors);
                     break;
             }
