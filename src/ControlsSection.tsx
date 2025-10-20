@@ -28,7 +28,7 @@ function ControlsSection({
     <Stack spacing={1}>
       <Box sx={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', color: 'text.secondary', letterSpacing: 1 }}>Controls</Box>
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0.5 }}>
-        <Tooltip title={KeyMap.RESTART_KEY}>
+        <Tooltip title={KeyMap.RESTART_KEY} arrow placement='top'>
           <Button
             onClick={onRestart}
             size="small"
@@ -40,7 +40,7 @@ function ControlsSection({
           </Button>
         </Tooltip>
 
-        <Tooltip title={KeyMap.LOOP_KEY}>
+        <Tooltip title={KeyMap.LOOP_KEY} arrow placement='top'>
           <Button
             onClick={() => onLoopAnimationChange(!loopAnimation)}
             size="small"
@@ -52,7 +52,7 @@ function ControlsSection({
           </Button>
         </Tooltip>
 
-        <Tooltip title={KeyMap.FIT_VIEW_KEY}>
+        <Tooltip title={KeyMap.FIT_VIEW_KEY} arrow placement='bottom'>
         <Button
           onClick={onFitView}
           size="small"
@@ -64,7 +64,7 @@ function ControlsSection({
         </Button>
         </Tooltip>
 
-        <Tooltip title={KeyMap.SCREENSHOT_KEY}>
+        <Tooltip title={KeyMap.SCREENSHOT_KEY} arrow placement='bottom'>
           <Button
             disabled={!canScreenshot}
             onClick={takeScreenshot}
